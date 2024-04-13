@@ -24,9 +24,6 @@ public class ActorPrototype : MonoBehaviour
 
     public COLOR ActorColor { get; private set; }
 
-    [SerializeField]
-    private Color32[] colors = new Color32[2];
-
     [Header("Movement")]
     [SerializeField]
     private float moveSpeed;
@@ -96,7 +93,7 @@ public class ActorPrototype : MonoBehaviour
         if (holding == false)
             return;
 
-        _hingeJoint2D.connectedAnchor = GamePrototype.MouseWorldPosition;
+        _hingeJoint2D.connectedAnchor = _gamePrototype.MouseWorldPosition;
         
         previousPos = currentPos;
         currentPos = _rigidbody2D.position;
@@ -109,7 +106,7 @@ public class ActorPrototype : MonoBehaviour
         //TODO Might want this as a hinge??
         _hingeJoint2D = gameObject.AddComponent<HingeJoint2D>();
         _hingeJoint2D.autoConfigureConnectedAnchor = false;
-        _hingeJoint2D.anchor = transform.position - GamePrototype.MouseWorldPosition;
+        _hingeJoint2D.anchor = transform.position - _gamePrototype.MouseWorldPosition;
         
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
 
@@ -137,7 +134,7 @@ public class ActorPrototype : MonoBehaviour
         MoveLocation = _gamePrototype.GetRandomPosition();
         
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _spriteRenderer.color = colors[(int)ActorColor];
+        _spriteRenderer.color = _gamePrototype.colors[(int)ActorColor];
     }
 
 

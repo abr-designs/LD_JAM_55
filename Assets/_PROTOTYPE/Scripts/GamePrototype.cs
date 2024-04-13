@@ -9,15 +9,20 @@ using Random = UnityEngine.Random;
 public enum COLOR
 {
     RED,
-    BLUE
+    BLUE,
+    GREEN,
+    PURPLE
 }
 
 public class GamePrototype : MonoBehaviour
 {
-    
-    public static Vector3 MouseWorldPosition => _mouseWorldPosition;
-    private static Vector3 _mouseWorldPosition;
-    private static Camera _camera;
+    public Vector3 MouseWorldPosition => _mouseWorldPosition;
+    private Vector3 _mouseWorldPosition;
+    private Camera _camera;
+
+    public static readonly int COLOR_COUNT = Enum.GetNames(typeof(COLOR)).Length;
+
+    //============================================================================================================//
 
 
     [SerializeField]
@@ -33,15 +38,16 @@ public class GamePrototype : MonoBehaviour
     [SerializeField]
     private int spawnCount;
 
+    public Color32[] colors = new Color32[COLOR_COUNT];
     [SerializeField]
-    private int[] colorCount = new int[2];
+    private int[] colorCount = new int[COLOR_COUNT];
 
-    private int[] colorsToCollect = new int[2];
+    private int[] colorsToCollect = new int[COLOR_COUNT];
 
     [SerializeField]
-    private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[2];
+    private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[COLOR_COUNT];
     [SerializeField]
-    private TextMeshPro[] _textMeshPros = new TextMeshPro[2];
+    private TextMeshPro[] _textMeshPros = new TextMeshPro[COLOR_COUNT];
     
     //Unity Functions
     //============================================================================================================//
@@ -82,7 +88,7 @@ public class GamePrototype : MonoBehaviour
     {
         for (int i = 0; i < spawnCount; i++)
         {
-            var colorIndex = Random.Range(0, 2);
+            var colorIndex = Random.Range(0, COLOR_COUNT);
             colorCount[colorIndex]++;
             var position = spawnLocation + (Random.insideUnitCircle * spawnRadius);
 
@@ -93,12 +99,13 @@ public class GamePrototype : MonoBehaviour
 
     private void SetOrder()
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < COLOR_COUNT; i++)
         {
             var count = Random.Range(0, colorCount[i] + 1);
 
             var isVisible = (count > 0);
-
+            
+            _spriteRenderers[i].color = colors[i];
             _spriteRenderers[i].gameObject.SetActive(isVisible);
             _textMeshPros[i].gameObject.SetActive(isVisible);
 
@@ -114,10 +121,12 @@ public class GamePrototype : MonoBehaviour
     {
         var colorIndex = (int)color;
 
-        if (colorsToCollect[colorIndex] <= 0)
-            return;
+        if (colorsToCollect[colorIndex] > 0)
+        {
+            colorsToCollect[colorIndex]--;
+        }
         
-        colorsToCollect[colorIndex]--;
+        
         UpdateColorsToCollect(colorIndex);
     }
 
@@ -127,6 +136,7 @@ public class GamePrototype : MonoBehaviour
         {
             //TODO This should be a check mark
             _textMeshPros[index].text = "xx";
+            return;
         }
         
         _textMeshPros[index].text = colorsToCollect[index].ToString();
