@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using Enums;
+using Managers;
 using UnityEngine;
 using Utilities.ReadOnly;
 using Random = UnityEngine.Random;
 
-namespace _PROTOTYPE.Scripts
+namespace Actors
 {
     public class SpawnerPrototype : MonoBehaviour
     {

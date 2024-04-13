@@ -1,19 +1,20 @@
 ﻿using System;
+using Enums;
 using UnityEngine;
 
-namespace _PROTOTYPE.Scripts
+namespace Data
 {
-    [Serializable]
-    public struct OrderData
-    {
-        public COLOR color;
-        [Min(0)]
-        public int count;
-    }
-
     [Serializable]
     public class Order
     {
+        [Serializable]
+        public struct OrderData
+        {
+            public COLOR color;
+            [Min(0)]
+            public int count;
+        }
+        
         [SerializeField]
         private string name;
 
