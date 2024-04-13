@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _PROTOTYPE.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +27,7 @@ public class GamePrototype : MonoBehaviour
     //============================================================================================================//
 
 
+
     [SerializeField]
     private ActorPrototype _actorPrefab;
     [SerializeField]
@@ -38,7 +40,12 @@ public class GamePrototype : MonoBehaviour
 
     [SerializeField]
     private int spawnCount;
-
+    
+    [SerializeField, Header("Orders")]
+    private Order[] orders;
+    private int _orderIndex;
+    
+    [Header("Colors")]
     public Color32[] colors = new Color32[COLOR_COUNT];
     [SerializeField]
     private int[] colorCount = new int[COLOR_COUNT];
@@ -49,6 +56,8 @@ public class GamePrototype : MonoBehaviour
     private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[COLOR_COUNT];
     [SerializeField]
     private TextMeshPro[] _textMeshPros = new TextMeshPro[COLOR_COUNT];
+    [SerializeField]
+    private TransformAnimator[] _transformAnimators = new TransformAnimator[COLOR_COUNT];
     
     //Unity Functions
     //============================================================================================================//
@@ -65,7 +74,7 @@ public class GamePrototype : MonoBehaviour
             _camera = Camera.main;
 
         SpawnRandomActors(spawnCount);
-        SetupOrder();
+        SetupOrder(orders[_orderIndex]);
     }
 
     // Update is called once per frame
@@ -90,24 +99,23 @@ public class GamePrototype : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             var color = (COLOR)Random.Range(0, COLOR_COUNT);
-            SpawnActor(color);
+            SpawnActor(color, GetRandomPosition());
         }
     }
     
-    public void SpawnActors(COLOR color, int count)
+    public void SpawnActors(COLOR color, int count, Vector2 position)
     {
         for (int i = 0; i < count; i++)
         {
-            SpawnActor(color);
+            SpawnActor(color, position);
         }
     }
 
-    public void SpawnActor(COLOR color)
+    public void SpawnActor(COLOR color, Vector2 position)
     {
         var colorIndex = (int)color;
         colorCount[colorIndex]++;
         //TODO Make something more interesting to look at, just plopping in the pen is not fun
-        var position = GetRandomPosition();
 
         var temp = Instantiate(_actorPrefab, position, Quaternion.identity, actorContainerTransform);
         temp.Init(color, this);
@@ -139,15 +147,26 @@ public class GamePrototype : MonoBehaviour
     //Collecting Items
     //============================================================================================================//
 
-    private void SetupOrder()
+    private void SetupOrder(Order order)
+    {
+        ResetOrderUI();
+        
+        for (int i = 0; i < order.orderDatas.Length; i++)
+        {
+            var orderColorIndex = (int)order.orderDatas[i].color;
+            var count = order.orderDatas[i].count;
+
+            colorsToCollect[orderColorIndex] = count;
+
+            SetupOrderUI(orderColorIndex, count);
+        }
+    }
+
+    private void ResetOrderUI()
     {
         for (int i = 0; i < COLOR_COUNT; i++)
         {
-            //FIXME Don't make this based on what currently is active
-            var count = Random.Range(0, colorCount[i] + 1);
-            colorsToCollect[i] = count;
-
-            SetupOrderUI(i, count);
+            SetupOrderUI(i, 0);
         }
     }
     
@@ -199,9 +218,12 @@ public class GamePrototype : MonoBehaviour
         {
             colorsToCollect[colorIndex]--;
         }
+        
+        _transformAnimators[colorIndex].Play();
 
         if (CheckOrderComplete())
         {
+            ResetOrderUI();
             //TODO Wrap up the order
             // - Add Points
             // - Do Animation

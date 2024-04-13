@@ -34,6 +34,7 @@ namespace _PROTOTYPE.Scripts
         private bool _isReady;
 
         private static GamePrototype _gamePrototype;
+        private TransformAnimator _transformAnimator;
 
         //Unity Functions
         //============================================================================================================//
@@ -43,28 +44,14 @@ namespace _PROTOTYPE.Scripts
             if (_gamePrototype == null)
                 _gamePrototype = FindObjectOfType<GamePrototype>();
 
+            _transformAnimator = GetComponent<TransformAnimator>();
+
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _spriteRenderer.color = readyColor;
 
             _timesLeftToClick = clickCost;
             _originalScale = transform.localScale;
         }
-
-        /*private void Update()
-        {
-            if (_canSpawn)
-                return;
-
-            if (_timer > 0f)
-            {
-                _timer -= Time.deltaTime;
-                return;
-            }
-
-            _timer = 0f;
-            _canSpawn = true;
-            _spriteRenderer.color = readyColor;
-        }*/
         
         private void OnMouseDown()
         {
@@ -81,13 +68,14 @@ namespace _PROTOTYPE.Scripts
                 {
                     _isReady = true;
                 }
-
+                else
+                    _transformAnimator.Play();
             }
             
             if (_isReady == false)
                 return;
             
-            _gamePrototype.SpawnActors(spawnColor, spawnCount);
+            _gamePrototype.SpawnActors(spawnColor, spawnCount, transform.position);
             _isReady = false;
             _timesLeftToClick = clickCost;
             _spriteRenderer.color = notReadyColor;
@@ -122,13 +110,6 @@ namespace _PROTOTYPE.Scripts
             onComplete?.Invoke();
         }
         
-        //============================================================================================================//
-
-        private void SpawnActor()
-        {
-            _gamePrototype.SpawnActor(COLOR.RED);
-        }
-
         //============================================================================================================//
     }
 }
