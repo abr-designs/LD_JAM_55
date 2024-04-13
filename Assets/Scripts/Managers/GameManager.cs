@@ -65,7 +65,7 @@ namespace Managers
         [SerializeField]
         private int[] colorCount = new int[COLOR_COUNT];
 
-        private int[] colorsToCollect = new int[COLOR_COUNT];
+        private readonly int[] _colorsToCollect = new int[COLOR_COUNT];
 
         //Unity Functions
         //============================================================================================================//
@@ -176,7 +176,7 @@ namespace Managers
                 var orderColorIndex = (int)order.orderDatas[i].color;
                 var count = order.orderDatas[i].count;
 
-                colorsToCollect[orderColorIndex] = count;
+                _colorsToCollect[orderColorIndex] = count;
 
                 OnColorRemainingSet?.Invoke(orderColorIndex, count);
             }
@@ -190,7 +190,7 @@ namespace Managers
         {
             for (int i = 0; i < COLOR_COUNT; i++)
             {
-                if (colorsToCollect[i] > 0)
+                if (_colorsToCollect[i] > 0)
                     return false;
             }
 
@@ -204,9 +204,9 @@ namespace Managers
         {
             var colorIndex = (int)color;
 
-            if (colorsToCollect[colorIndex] > 0)
+            if (_colorsToCollect[colorIndex] > 0)
             {
-                colorsToCollect[colorIndex]--;
+                _colorsToCollect[colorIndex]--;
             }
         
             //TODO Wrap up the order
@@ -230,7 +230,7 @@ namespace Managers
 
             }
         
-            OnColorRemainingChanged?.Invoke(colorIndex, colorsToCollect[colorIndex]);
+            OnColorRemainingChanged?.Invoke(colorIndex, _colorsToCollect[colorIndex]);
         }
 
         //Unity Editor
