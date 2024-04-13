@@ -17,6 +17,7 @@ public class TransformAnimator : MonoBehaviour
 
     
     private bool _isPlaying;
+    private bool _looping;
     private Vector3 _originalScale;
     private Quaternion _originalRotation;
 
@@ -26,7 +27,69 @@ public class TransformAnimator : MonoBehaviour
             Stop();
 
         var time = Random.Range(animationTimeRange.x, animationTimeRange.y);
-        StartCoroutine(PlayAnimationCoroutine(time));
+        StartCoroutine(PlayAnimationCoroutine());
+
+        return;
+        //------------------------------------------------//
+        IEnumerator PlayAnimationCoroutine()
+        {
+            _isPlaying = true;
+
+            _originalScale = transform.localScale;
+            _originalRotation = transform.rotation;
+
+            var cor1 = StartCoroutine(ScaleAnimationCoroutine(time));
+            var cor2 = StartCoroutine(RotationAnimationCoroutine(time));
+
+            yield return new WaitForSeconds(time);
+        
+            StopCoroutine(cor1);
+            StopCoroutine(cor2);
+
+            transform.localScale = _originalScale;
+            transform.rotation = _originalRotation;
+
+            _isPlaying = false;
+        }
+    }
+
+    public void Loop()
+    {
+        if (_isPlaying)
+            Stop();
+
+        _looping = true;
+        StartCoroutine(PlayAnimationCoroutine());
+        
+        return;
+        IEnumerator PlayAnimationCoroutine()
+        {
+            _isPlaying = true;
+
+            _originalScale = transform.localScale;
+            _originalRotation = transform.rotation;
+            
+            Coroutine cor1 = null;
+            Coroutine cor2 = null;
+
+            while (_looping)
+            {
+                var time = Random.Range(animationTimeRange.x, animationTimeRange.y);
+                
+                cor1 = StartCoroutine(ScaleAnimationCoroutine(time));
+                cor2 = StartCoroutine(RotationAnimationCoroutine(time));
+
+                yield return new WaitForSeconds(time);
+            }
+        
+            StopCoroutine(cor1);
+            StopCoroutine(cor2);
+
+            transform.localScale = _originalScale;
+            transform.rotation = _originalRotation;
+
+            _isPlaying = false;
+        }
     }
 
     public void Stop()
@@ -35,27 +98,7 @@ public class TransformAnimator : MonoBehaviour
         transform.localScale = _originalScale;
         transform.rotation = _originalRotation;
         _isPlaying = false;
-    }
-
-    private IEnumerator PlayAnimationCoroutine(float time)
-    {
-        _isPlaying = true;
-
-        _originalScale = transform.localScale;
-        _originalRotation = transform.rotation;
-
-        var cor1 = StartCoroutine(ScaleAnimationCoroutine(time));
-        var cor2 = StartCoroutine(RotationAnimationCoroutine(time));
-
-        yield return new WaitForSeconds(time);
-        
-        StopCoroutine(cor1);
-        StopCoroutine(cor2);
-
-        transform.localScale = _originalScale;
-        transform.rotation = _originalRotation;
-
-        _isPlaying = false;
+        _looping = false;
     }
 
     private IEnumerator ScaleAnimationCoroutine(float time)

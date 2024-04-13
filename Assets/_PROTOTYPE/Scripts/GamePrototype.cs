@@ -26,9 +26,7 @@ public class GamePrototype : MonoBehaviour
 
     //============================================================================================================//
 
-
-
-    [SerializeField]
+    [SerializeField, Header("Spawning")]
     private ActorPrototype _actorPrefab;
     [SerializeField]
     private Transform actorContainerTransform;
@@ -40,10 +38,17 @@ public class GamePrototype : MonoBehaviour
 
     [SerializeField]
     private int spawnCount;
-    
+
+    //Orders
+    //------------------------------------------------//
     [SerializeField, Header("Orders")]
     private Order[] orders;
     private int _orderIndex;
+    [SerializeField]
+    private VanPrototype van;
+
+    //Colors
+    //------------------------------------------------//
     
     [Header("Colors")]
     public Color32[] colors = new Color32[COLOR_COUNT];
@@ -52,7 +57,9 @@ public class GamePrototype : MonoBehaviour
 
     private int[] colorsToCollect = new int[COLOR_COUNT];
 
-    [SerializeField]
+    //Ui
+    //------------------------------------------------//
+    [SerializeField, Header("UI")]
     private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[COLOR_COUNT];
     [SerializeField]
     private TextMeshPro[] _textMeshPros = new TextMeshPro[COLOR_COUNT];
@@ -227,6 +234,11 @@ public class GamePrototype : MonoBehaviour
             //TODO Wrap up the order
             // - Add Points
             // - Do Animation
+            van.PlayAnimation(() =>
+            {
+                //FIXME Make this progress
+                SetupOrder(orders[0]);
+            });
             // - Countdown to next order?
             // - Setup Next Order
         }
