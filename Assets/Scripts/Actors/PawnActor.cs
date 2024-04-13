@@ -47,7 +47,7 @@ namespace Actors
         private float _currentWaitTime;
         private float _targetWaitTime;
 
-        private GamePrototype _gamePrototype;
+        private GameManager _gameManager;
     
         private STATE _currentState;
 
@@ -60,7 +60,7 @@ namespace Actors
 
         private void Update()
         {
-            _spriteRenderer.sortingOrder = _gamePrototype.GetSortingOrder(transform.position.y);
+            _spriteRenderer.sortingOrder = _gameManager.GetSortingOrder(transform.position.y);
 
             StateUpdate();
         }
@@ -70,7 +70,7 @@ namespace Actors
             if (_currentState != STATE.HOLD)
                 return;
 
-            _hingeJoint2D.connectedAnchor = _gamePrototype.MouseWorldPosition;
+            _hingeJoint2D.connectedAnchor = _gameManager.MouseWorldPosition;
         
             _previousPos = _currentPos;
             _currentPos = _rigidbody2D.position;
@@ -88,16 +88,16 @@ namespace Actors
     
         //============================================================================================================//
 
-        public void Init(COLOR color, GamePrototype gamePrototype)
+        public void Init(COLOR color, GameManager gameManager)
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _transformAnimator = GetComponent<TransformAnimator>();
         
             ActorColor = color;
-            _gamePrototype = gamePrototype;
+            _gameManager = gameManager;
         
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _spriteRenderer.color = _gamePrototype.colors[(int)ActorColor];
+            _spriteRenderer.color = _gameManager.colors[(int)ActorColor];
         
             SetState(STATE.SPAWN);
         }
@@ -124,7 +124,7 @@ namespace Actors
                     break;
                 case STATE.SPAWN:
                     _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
-                    _moveLocation = _gamePrototype.GetRandomPosition();
+                    _moveLocation = _gameManager.GetRandomPosition();
 
                     var spawnDir = Random.insideUnitCircle.normalized;
                     spawnDir.y = Mathf.Abs(spawnDir.y);
@@ -134,10 +134,11 @@ namespace Actors
                 case STATE.IDLE:
                     _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
                     _targetWaitTime = Random.Range(0f, moveMaxWaitTime);
+                    
                     break;
                 case STATE.MOVING:
                     _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
-                    _moveLocation = _gamePrototype.GetRandomPosition();
+                    _moveLocation = _gameManager.GetRandomPosition();
                     _spriteRenderer.flipX = (_moveLocation.x - transform.position.x) > 0f;
                 
                     transform.localRotation = Quaternion.identity;
@@ -150,7 +151,7 @@ namespace Actors
                     _transformAnimator.Play();
                     _hingeJoint2D = gameObject.AddComponent<HingeJoint2D>();
                     _hingeJoint2D.autoConfigureConnectedAnchor = false;
-                    _hingeJoint2D.anchor = transform.position - _gamePrototype.MouseWorldPosition;
+                    _hingeJoint2D.anchor = transform.position - _gameManager.MouseWorldPosition;
         
                     _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
 

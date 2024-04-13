@@ -7,11 +7,11 @@ namespace _PROTOTYPE.Scripts
 {
     public class UIManager : MonoBehaviour
     {
-        private static int COLOR_COUNT => GamePrototype.COLOR_COUNT;
+        private static int COLOR_COUNT => GameManager.COLOR_COUNT;
 
         //============================================================================================================//
 
-        private GamePrototype _gamePrototype;
+        private GameManager _gameManager;
         
         [SerializeField, Header("UI")]
         private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[COLOR_COUNT];
@@ -28,27 +28,27 @@ namespace _PROTOTYPE.Scripts
         //============================================================================================================//
         private void OnEnable()
         {
-            GamePrototype.OnCountdownUpdated += UpdateCountdownText;
-            GamePrototype.OnCurrencyChanged += OnCurrencyChanged;
-            GamePrototype.OnColorRemainingChanged += UpdateColorsToCollectUI;
-            GamePrototype.OnColorRemainingSet += SetupOrderUI;
-            GamePrototype.OnOrderCompleted += ResetOrderUI;
+            GameManager.OnCountdownUpdated += UpdateCountdownText;
+            GameManager.OnCurrencyChanged += OnCurrencyChanged;
+            GameManager.OnColorRemainingChanged += UpdateColorsToCollectUI;
+            GameManager.OnColorRemainingSet += SetupOrderUI;
+            GameManager.OnOrderCompleted += ResetOrderUI;
         }
 
         private void Start()
         {
-            _gamePrototype = FindObjectOfType<GamePrototype>();
+            _gameManager = FindObjectOfType<GameManager>();
             
             SetupUI();
         }
 
         private void OnDisable()
         {
-            GamePrototype.OnCountdownUpdated -= UpdateCountdownText;
-            GamePrototype.OnCurrencyChanged -= OnCurrencyChanged;
-            GamePrototype.OnColorRemainingChanged -= UpdateColorsToCollectUI;
-            GamePrototype.OnColorRemainingSet -= SetupOrderUI;
-            GamePrototype.OnOrderCompleted -= ResetOrderUI;
+            GameManager.OnCountdownUpdated -= UpdateCountdownText;
+            GameManager.OnCurrencyChanged -= OnCurrencyChanged;
+            GameManager.OnColorRemainingChanged -= UpdateColorsToCollectUI;
+            GameManager.OnColorRemainingSet -= SetupOrderUI;
+            GameManager.OnOrderCompleted -= ResetOrderUI;
         }
 
         //============================================================================================================//
@@ -81,7 +81,7 @@ namespace _PROTOTYPE.Scripts
         {
             var isVisible = count > 0;
             
-            _spriteRenderers[colorIndex].color = _gamePrototype.colors[colorIndex];
+            _spriteRenderers[colorIndex].color = _gameManager.colors[colorIndex];
             _spriteRenderers[colorIndex].gameObject.SetActive(isVisible);
             _textMeshPros[colorIndex].gameObject.SetActive(isVisible);
 

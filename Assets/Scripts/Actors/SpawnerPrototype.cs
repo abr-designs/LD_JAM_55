@@ -35,7 +35,7 @@ namespace Actors
         private Vector3 _originalScale;
         private bool _isReady;
 
-        private static GamePrototype _gamePrototype;
+        private static GameManager _gameManager;
         private TransformAnimator _transformAnimator;
 
         //Unity Functions
@@ -43,8 +43,8 @@ namespace Actors
         
         private void Start()
         {
-            if (_gamePrototype == null)
-                _gamePrototype = FindObjectOfType<GamePrototype>();
+            if (_gameManager == null)
+                _gameManager = FindObjectOfType<GameManager>();
 
             _transformAnimator = GetComponent<TransformAnimator>();
 
@@ -77,7 +77,7 @@ namespace Actors
             if (_isReady == false)
                 return;
             
-            _gamePrototype.SpawnActors(spawnColor, spawnCount, transform.position);
+            _gameManager.SpawnActors(spawnColor, spawnCount, transform.position);
             _isReady = false;
             _timesLeftToClick = clickCost;
             _spriteRenderer.color = notReadyColor;

@@ -10,7 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace Managers
 {
-    public class GamePrototype : MonoBehaviour
+    public class GameManager : MonoBehaviour
     {
         public static event Action OnOrderCompleted;
         public static event Action<float> OnCountdownUpdated;
