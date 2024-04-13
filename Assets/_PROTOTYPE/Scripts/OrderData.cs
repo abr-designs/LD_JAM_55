@@ -17,6 +17,12 @@ namespace _PROTOTYPE.Scripts
         [SerializeField]
         private string name;
 
+        [SerializeField, Min(0)]
+        public int reward;
+
+        [SerializeField, Min(0f)]
+        public float orderTime;
+
         public OrderData[] orderDatas;
 
     }

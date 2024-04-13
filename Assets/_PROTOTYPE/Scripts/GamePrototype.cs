@@ -18,6 +18,14 @@ public enum COLOR
 
 public class GamePrototype : MonoBehaviour
 {
+    public static event Action OnOrderCompleted;
+    public static event Action<float> OnCountdownUpdated;
+    public static event Action<int> OnCurrencyChanged;
+    //Index, Count
+    public static event Action<int, int> OnColorRemainingSet; 
+    //Index, Count
+    public static event Action<int, int> OnColorRemainingChanged; 
+    
     public Vector3 MouseWorldPosition => _mouseWorldPosition;
     private Vector3 _mouseWorldPosition;
     private Camera _camera;
@@ -47,6 +55,14 @@ public class GamePrototype : MonoBehaviour
     [SerializeField]
     private VanPrototype van;
 
+    private bool _countingDownOrderTime;
+    private float _orderSecondsRemaining;
+
+    //Currency
+    //------------------------------------------------//
+
+    private int _currency;
+
     //Colors
     //------------------------------------------------//
     
@@ -57,15 +73,6 @@ public class GamePrototype : MonoBehaviour
 
     private int[] colorsToCollect = new int[COLOR_COUNT];
 
-    //Ui
-    //------------------------------------------------//
-    [SerializeField, Header("UI")]
-    private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[COLOR_COUNT];
-    [SerializeField]
-    private TextMeshPro[] _textMeshPros = new TextMeshPro[COLOR_COUNT];
-    [SerializeField]
-    private TransformAnimator[] _transformAnimators = new TransformAnimator[COLOR_COUNT];
-    
     //Unity Functions
     //============================================================================================================//
 
@@ -92,6 +99,20 @@ public class GamePrototype : MonoBehaviour
         
         _mouseWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
         _mouseWorldPosition.z = 0;
+
+        if (_countingDownOrderTime)
+        {
+            //TODO Make this only update every second
+            if (_orderSecondsRemaining > 0f)
+            {
+                _orderSecondsRemaining -= Time.deltaTime;
+                OnCountdownUpdated?.Invoke(_orderSecondsRemaining);
+                return;
+            }
+            
+            //TODO Include a losing condition here
+            
+        }
     }
     
     private void OnDisable()
@@ -156,8 +177,6 @@ public class GamePrototype : MonoBehaviour
 
     private void SetupOrder(Order order)
     {
-        ResetOrderUI();
-        
         for (int i = 0; i < order.orderDatas.Length; i++)
         {
             var orderColorIndex = (int)order.orderDatas[i].color;
@@ -165,30 +184,12 @@ public class GamePrototype : MonoBehaviour
 
             colorsToCollect[orderColorIndex] = count;
 
-            SetupOrderUI(orderColorIndex, count);
+            OnColorRemainingSet?.Invoke(orderColorIndex, count);
         }
-    }
 
-    private void ResetOrderUI()
-    {
-        for (int i = 0; i < COLOR_COUNT; i++)
-        {
-            SetupOrderUI(i, 0);
-        }
-    }
-    
-    private void SetupOrderUI(int colorIndex, int count)
-    {
-        var isVisible = (count > 0);
-            
-        _spriteRenderers[colorIndex].color = colors[colorIndex];
-        _spriteRenderers[colorIndex].gameObject.SetActive(isVisible);
-        _textMeshPros[colorIndex].gameObject.SetActive(isVisible);
-
-        if (isVisible == false)
-            return;
-            
-        _textMeshPros[colorIndex].text = count.ToString();
+        _countingDownOrderTime = true;
+        _orderSecondsRemaining = order.orderTime;
+        OnCountdownUpdated?.Invoke(_orderSecondsRemaining);
     }
 
     private bool CheckOrderComplete()
@@ -200,18 +201,6 @@ public class GamePrototype : MonoBehaviour
         }
 
         return true;
-    }
-
-    private void UpdateColorsToCollectUI(int index)
-    {
-        if (colorsToCollect[index] == 0)
-        {
-            //TODO This should be a check mark
-            _textMeshPros[index].text = "xx";
-            return;
-        }
-        
-        _textMeshPros[index].text = colorsToCollect[index].ToString();
     }
 
     //Callbacks
@@ -226,24 +215,28 @@ public class GamePrototype : MonoBehaviour
             colorsToCollect[colorIndex]--;
         }
         
-        _transformAnimators[colorIndex].Play();
-
+        //TODO Wrap up the order
         if (CheckOrderComplete())
         {
-            ResetOrderUI();
-            //TODO Wrap up the order
+            _countingDownOrderTime = false;
+            OnOrderCompleted?.Invoke();
+            
             // - Add Points
+            //TODO Make this more interesting by having them drop out of the van
+            _currency += orders[_orderIndex].reward;
+            OnCurrencyChanged?.Invoke(_currency);
             // - Do Animation
+            // - Countdown to next order?
+            // - Setup Next Order
             van.PlayAnimation(() =>
             {
                 //FIXME Make this progress
                 SetupOrder(orders[0]);
             });
-            // - Countdown to next order?
-            // - Setup Next Order
+
         }
         
-        UpdateColorsToCollectUI(colorIndex);
+        OnColorRemainingChanged?.Invoke(colorIndex, colorsToCollect[colorIndex]);
     }
 
     //Unity Editor

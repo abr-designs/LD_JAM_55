@@ -26,6 +26,9 @@ public class TransformAnimator : MonoBehaviour
         if (_isPlaying)
             Stop();
 
+        if (gameObject.activeInHierarchy == false)
+            return;
+
         var time = Random.Range(animationTimeRange.x, animationTimeRange.y);
         StartCoroutine(PlayAnimationCoroutine());
 
