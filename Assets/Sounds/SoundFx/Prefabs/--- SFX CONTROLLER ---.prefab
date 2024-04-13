@@ -1,0 +1,225 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3930058248726239235
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6602548872609965373}
+  - component: {fileID: 6565548158353040769}
+  m_Layer: 0
+  m_Name: SfxAudioSource
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6602548872609965373
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3930058248726239235}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4639160114996083827}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &6565548158353040769
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3930058248726239235}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -5126370574719963628, guid: ce08768a569db8b429bc3e45071f1f19,
+    type: 2}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1 &4194971721073177248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4639160114996083827}
+  - component: {fileID: 7777109018335714303}
+  m_Layer: 0
+  m_Name: --- SFX CONTROLLER ---
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4639160114996083827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4194971721073177248}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6602548872609965373}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7777109018335714303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4194971721073177248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c81e6ee4391f244b58945a330c97b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxAudioMixer: {fileID: -5126370574719963628, guid: ce08768a569db8b429bc3e45071f1f19,
+    type: 2}
+  sfxAudioSource: {fileID: 6565548158353040769}
+  sfxSourcePrefab: {fileID: 144211660340659278, guid: c7877577d67448743b4632fe48819da7,
+    type: 3}
+  sfxDatas:
+  - name: IMPACT
+    type: 1
+    audioClips:
+    - {fileID: 8300000, guid: 1bca88f2ae0a5194fa6a64423caaa532, type: 3}
+    - {fileID: 8300000, guid: b7d016e2e0eb9164d80382a58232832e, type: 3}
+    - {fileID: 8300000, guid: 2ff4ec2731ff330429d1d7ee5fe7bb84, type: 3}
+    - {fileID: 8300000, guid: c16fc5b3670b620479d5553c4285a079, type: 3}
+    - {fileID: 8300000, guid: 26a58ea41c5cb8547bc28c4a3eefb301, type: 3}
+    volume: 1
+  - name: SQUELCH
+    type: 2
+    audioClips:
+    - {fileID: 8300000, guid: 92e053f7d965ae84f9014f48933d1b29, type: 3}
+    - {fileID: 8300000, guid: 2d10c69bf9d21d448b873fce14e46c16, type: 3}
+    - {fileID: 8300000, guid: 254195e03a81ad840a47b0f043f9fd54, type: 3}
+    - {fileID: 8300000, guid: 06fb15b363034fc4c88ad676c48b952e, type: 3}
+    - {fileID: 8300000, guid: 0db87931b4343464895b93ad99d0e0f1, type: 3}
+    - {fileID: 8300000, guid: cf93c01034a7a034e8594929e03225d8, type: 3}
+    - {fileID: 8300000, guid: 4fb2514e39df83a4fa1c3a94a2fdb9b9, type: 3}
+    - {fileID: 8300000, guid: 929d7b2ba77753b4184c52db8194d975, type: 3}
+    volume: 1
+  - name: WOOD_BREAK
+    type: 3
+    audioClips:
+    - {fileID: 8300000, guid: 49bcea9f2f680304f9f4561a4e05243c, type: 3}
+    - {fileID: 8300000, guid: 80822df4fe2bd084c9376fd2379b2281, type: 3}
+    volume: 1
+  - name: CERAMIC_BREAK
+    type: 4
+    audioClips:
+    - {fileID: 8300000, guid: f3743c9d4fcc0e24b9666df759c6459c, type: 3}
+    volume: 1
+  - name: KING_HAPPY
+    type: 5
+    audioClips:
+    - {fileID: 8300000, guid: f64f510a5efe18f40886705b2e0a7cf2, type: 3}
+    - {fileID: 8300000, guid: 75eaed57d8ab41e4ca79efc89cdf5480, type: 3}
+    volume: 1
+  - name: KING_ANGRY
+    type: 6
+    audioClips:
+    - {fileID: 8300000, guid: 277a374ebee05c04283037c975689e3f, type: 3}
+    volume: 1
