@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2950932012321481086}
   - component: {fileID: 373438116533380914}
   - component: {fileID: 4566004533403695530}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ActorPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -3.42, y: -1.37, z: 0}
-  m_LocalScale: {x: 0.65, y: 0.65, z: 0.65}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -57,6 +57,8 @@ MonoBehaviour:
     rgba: 4294940461
   moveSpeed: 1
   MoveLocation: {x: 0, y: 0}
+  moveMaxWaitTime: 1
+  isWaiting: 0
 --- !u!212 &2950932012321481086
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -98,7 +100,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -7721635179972157553, guid: 7cfee1e9a3d70a841a738ee59005054f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

@@ -33,8 +33,16 @@ public class ActorPrototype : MonoBehaviour
     [SerializeField]
     private Vector2 MoveLocation;
 
-    private Vector2 moveCircle;
-    private float moveCircleRadius;
+    [SerializeField, Min(0f)]
+    private float moveMaxWaitTime;
+
+    private float _currentWaitTime;
+    private float _targetWaitTime;
+
+    [SerializeField]
+    private bool isWaiting;
+
+    private GamePrototype _gamePrototype;
     
 
     //============================================================================================================//
@@ -47,17 +55,40 @@ public class ActorPrototype : MonoBehaviour
 
     private void Update()
     {
+        _spriteRenderer.sortingOrder = _gamePrototype.GetSortingOrder(transform.position.y);
+        
         if (holding || _rigidbody2D.bodyType != RigidbodyType2D.Kinematic)
             return;
 
+        //------------------------------------------------//
+        
+        if (isWaiting)
+        {
+            if (_currentWaitTime < _targetWaitTime)
+            {
+                _currentWaitTime += Time.deltaTime;
+                return;
+            }
+
+            _currentWaitTime = 0f;
+            MoveLocation = _gamePrototype.GetRandomPosition();
+
+            _spriteRenderer.flipX = (MoveLocation.x - transform.position.x) > 0f;
+            
+            
+            isWaiting = false;
+        }
+
+        //------------------------------------------------//
+        
         if (Vector2.Distance(transform.position, MoveLocation) > 0.1f)
         {
             transform.position = Vector2.MoveTowards(transform.position, MoveLocation, moveSpeed * Time.deltaTime);
             return;
         }
-
-        MoveLocation = moveCircle + (Random.insideUnitCircle * moveCircleRadius);
-
+        
+        isWaiting = true;
+        _targetWaitTime = Random.Range(0f, moveMaxWaitTime);
     }
 
     private void FixedUpdate()
@@ -80,11 +111,9 @@ public class ActorPrototype : MonoBehaviour
         _hingeJoint2D.autoConfigureConnectedAnchor = false;
         _hingeJoint2D.anchor = transform.position - GamePrototype.MouseWorldPosition;
         
-        //_fixedJoint2D.anchor = mouseWorldPosition;
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
 
         currentPos = previousPos = _rigidbody2D.position;
-
     }
 
     private void OnMouseUp()
@@ -100,16 +129,19 @@ public class ActorPrototype : MonoBehaviour
     }
     //============================================================================================================//
 
-    public void Init(COLOR color, Vector2 moveCenter, float moveRadius)
+    public void Init(COLOR color, GamePrototype gamePrototype)
     {
         ActorColor = color;
-        moveCircle = moveCenter;
-        moveCircleRadius = moveRadius;
+        _gamePrototype = gamePrototype;
         
-        MoveLocation = moveCircle + (Random.insideUnitCircle * moveCircleRadius);
+        MoveLocation = _gamePrototype.GetRandomPosition();
         
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.color = colors[(int)ActorColor];
     }
 
+
+    
+    //============================================================================================================//
+    
 }

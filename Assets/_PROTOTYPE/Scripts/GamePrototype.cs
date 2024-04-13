@@ -51,10 +51,8 @@ public class GamePrototype : MonoBehaviour
         CollectorPrototype.OnCollectedColor += CollectorPrototypeOnOnCollectedColor;
     }
 
-
-
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         if (_camera == null)
             _camera = Camera.main;
@@ -89,7 +87,7 @@ public class GamePrototype : MonoBehaviour
             var position = spawnLocation + (Random.insideUnitCircle * spawnRadius);
 
             var temp = Instantiate(_actorPrefab, position, Quaternion.identity, actorContainerTransform);
-            temp.Init((COLOR)colorIndex, spawnLocation, spawnRadius);
+            temp.Init((COLOR)colorIndex, this);
         }
     }
 
@@ -125,7 +123,29 @@ public class GamePrototype : MonoBehaviour
 
     private void UpdateColorsToCollect(int index)
     {
+        if (colorsToCollect[index] == 0)
+        {
+            //TODO This should be a check mark
+            _textMeshPros[index].text = "xx";
+        }
+        
         _textMeshPros[index].text = colorsToCollect[index].ToString();
+    }
+
+    //Public Methods
+    //============================================================================================================//
+    
+    public Vector2 GetRandomPosition()
+    {
+        return spawnLocation + (Random.insideUnitCircle * spawnRadius);
+    }
+    
+    public int GetSortingOrder(float yPos)
+    {
+        var maxY = spawnLocation.y - spawnRadius;
+        var minY = spawnLocation.y + spawnRadius;
+
+        return Mathf.RoundToInt(Mathf.InverseLerp(minY, maxY, yPos) * 10);
     }
 
     //Unity Editor
