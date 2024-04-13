@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public enum COLOR
@@ -30,10 +31,10 @@ public class GamePrototype : MonoBehaviour
     [SerializeField]
     private Transform actorContainerTransform;
 
-    [SerializeField, Header("Spawn Info")]
-    private Vector2 spawnLocation;
+    [FormerlySerializedAs("spawnLocation")] [SerializeField, Header("Spawn Info")]
+    private Vector2 spawnLocationCenter;
     [SerializeField, Min(0f)]
-    private float spawnRadius;
+    private Vector2 spawnArea;
 
     [SerializeField]
     private int spawnCount;
@@ -54,7 +55,7 @@ public class GamePrototype : MonoBehaviour
 
     private void OnEnable()
     {
-        CollectorPrototype.OnCollectedColor += CollectorPrototypeOnOnCollectedColor;
+        CollectorPrototype.OnCollectedColor += OnCollectedColor;
     }
 
     // Start is called before the first frame update
@@ -63,8 +64,8 @@ public class GamePrototype : MonoBehaviour
         if (_camera == null)
             _camera = Camera.main;
 
-        SpawnActors();
-        SetOrder();
+        SpawnRandomActors(spawnCount);
+        SetupOrder();
     }
 
     // Update is called once per frame
@@ -79,58 +80,103 @@ public class GamePrototype : MonoBehaviour
     
     private void OnDisable()
     {
-        CollectorPrototype.OnCollectedColor -= CollectorPrototypeOnOnCollectedColor;
+        CollectorPrototype.OnCollectedColor -= OnCollectedColor;
     }
 
     //============================================================================================================//
 
-    private void SpawnActors()
+    private void SpawnRandomActors(int count)
     {
-        for (int i = 0; i < spawnCount; i++)
+        for (int i = 0; i < count; i++)
         {
-            var colorIndex = Random.Range(0, COLOR_COUNT);
-            colorCount[colorIndex]++;
-            var position = spawnLocation + (Random.insideUnitCircle * spawnRadius);
-
-            var temp = Instantiate(_actorPrefab, position, Quaternion.identity, actorContainerTransform);
-            temp.Init((COLOR)colorIndex, this);
-        }
-    }
-
-    private void SetOrder()
-    {
-        for (int i = 0; i < COLOR_COUNT; i++)
-        {
-            var count = Random.Range(0, colorCount[i] + 1);
-
-            var isVisible = (count > 0);
-            
-            _spriteRenderers[i].color = colors[i];
-            _spriteRenderers[i].gameObject.SetActive(isVisible);
-            _textMeshPros[i].gameObject.SetActive(isVisible);
-
-            if (isVisible == false)
-                continue;
-
-            colorsToCollect[i] = count;
-            _textMeshPros[i].text = count.ToString();
+            var color = (COLOR)Random.Range(0, COLOR_COUNT);
+            SpawnActor(color);
         }
     }
     
-    private void CollectorPrototypeOnOnCollectedColor(COLOR color)
+    public void SpawnActors(COLOR color, int count)
     {
-        var colorIndex = (int)color;
-
-        if (colorsToCollect[colorIndex] > 0)
+        for (int i = 0; i < count; i++)
         {
-            colorsToCollect[colorIndex]--;
+            SpawnActor(color);
         }
-        
-        
-        UpdateColorsToCollect(colorIndex);
     }
 
-    private void UpdateColorsToCollect(int index)
+    public void SpawnActor(COLOR color)
+    {
+        var colorIndex = (int)color;
+        colorCount[colorIndex]++;
+        //TODO Make something more interesting to look at, just plopping in the pen is not fun
+        var position = GetRandomPosition();
+
+        var temp = Instantiate(_actorPrefab, position, Quaternion.identity, actorContainerTransform);
+        temp.Init(color, this);
+    }
+
+    //Public Methods
+    //============================================================================================================//
+    
+    public Vector2 GetRandomPosition()
+    {
+        var half = spawnArea / 2f;
+
+        var x = Random.Range(-half.x, half.x);
+        var y = Random.Range(-half.y, half.y);
+        
+        return spawnLocationCenter + new Vector2(x, y);
+    }
+    
+    public int GetSortingOrder(float yPos)
+    {
+        var halfY = spawnArea.y / 2f;
+        
+        var maxY = spawnLocationCenter.y - halfY;
+        var minY = spawnLocationCenter.y + halfY;
+
+        return Mathf.RoundToInt(Mathf.InverseLerp(minY, maxY, yPos) * 10);
+    }
+
+    //Collecting Items
+    //============================================================================================================//
+
+    private void SetupOrder()
+    {
+        for (int i = 0; i < COLOR_COUNT; i++)
+        {
+            //FIXME Don't make this based on what currently is active
+            var count = Random.Range(0, colorCount[i] + 1);
+            colorsToCollect[i] = count;
+
+            SetupOrderUI(i, count);
+        }
+    }
+    
+    private void SetupOrderUI(int colorIndex, int count)
+    {
+        var isVisible = (count > 0);
+            
+        _spriteRenderers[colorIndex].color = colors[colorIndex];
+        _spriteRenderers[colorIndex].gameObject.SetActive(isVisible);
+        _textMeshPros[colorIndex].gameObject.SetActive(isVisible);
+
+        if (isVisible == false)
+            return;
+            
+        _textMeshPros[colorIndex].text = count.ToString();
+    }
+
+    private bool CheckOrderComplete()
+    {
+        for (int i = 0; i < COLOR_COUNT; i++)
+        {
+            if (colorsToCollect[i] > 0)
+                return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateColorsToCollectUI(int index)
     {
         if (colorsToCollect[index] == 0)
         {
@@ -142,29 +188,39 @@ public class GamePrototype : MonoBehaviour
         _textMeshPros[index].text = colorsToCollect[index].ToString();
     }
 
-    //Public Methods
+    //Callbacks
     //============================================================================================================//
     
-    public Vector2 GetRandomPosition()
+    private void OnCollectedColor(COLOR color)
     {
-        return spawnLocation + (Random.insideUnitCircle * spawnRadius);
-    }
-    
-    public int GetSortingOrder(float yPos)
-    {
-        var maxY = spawnLocation.y - spawnRadius;
-        var minY = spawnLocation.y + spawnRadius;
+        var colorIndex = (int)color;
 
-        return Mathf.RoundToInt(Mathf.InverseLerp(minY, maxY, yPos) * 10);
+        if (colorsToCollect[colorIndex] > 0)
+        {
+            colorsToCollect[colorIndex]--;
+        }
+
+        if (CheckOrderComplete())
+        {
+            //TODO Wrap up the order
+            // - Add Points
+            // - Do Animation
+            // - Countdown to next order?
+            // - Setup Next Order
+        }
+        
+        UpdateColorsToCollectUI(colorIndex);
     }
 
     //Unity Editor
     //============================================================================================================//
+
+#if UNITY_EDITOR
     
     private void OnDrawGizmos()
     {
         Gizmos.color =Color.green;
-        Gizmos.DrawWireSphere(spawnLocation, spawnRadius);
+        Gizmos.DrawWireCube(spawnLocationCenter, spawnArea);
         
         if (Application.isPlaying == false)
             return;
@@ -172,6 +228,8 @@ public class GamePrototype : MonoBehaviour
         Gizmos.color =Color.yellow;
         Gizmos.DrawWireSphere(_mouseWorldPosition, 0.25f);
     }
+    
+#endif
     
     //============================================================================================================//
 }

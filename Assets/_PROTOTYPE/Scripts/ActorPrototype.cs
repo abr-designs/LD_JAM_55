@@ -103,7 +103,7 @@ public class ActorPrototype : MonoBehaviour
     private void OnMouseDown()
     {
         holding = true;
-        //TODO Might want this as a hinge??
+
         _hingeJoint2D = gameObject.AddComponent<HingeJoint2D>();
         _hingeJoint2D.autoConfigureConnectedAnchor = false;
         _hingeJoint2D.anchor = transform.position - _gamePrototype.MouseWorldPosition;
@@ -121,7 +121,6 @@ public class ActorPrototype : MonoBehaviour
         Destroy(_hingeJoint2D);
         holding = false;
         
-        Debug.Log($"Magnitude: {velocity.magnitude}");
         _rigidbody2D.velocity = velocity;
     }
     //============================================================================================================//
@@ -136,8 +135,6 @@ public class ActorPrototype : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _spriteRenderer.color = _gamePrototype.colors[(int)ActorColor];
     }
-
-
     
     //============================================================================================================//
     
