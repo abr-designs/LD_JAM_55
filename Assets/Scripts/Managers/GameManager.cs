@@ -245,6 +245,7 @@ namespace Managers
         //Collecting Items
         //============================================================================================================//
 
+        private bool _shownProcessorTutorial;
         private void SetupOrder(Order order)
         {
             for (int i = 0; i < order.orderDatas.Length; i++)
@@ -265,6 +266,13 @@ namespace Managers
                         throw new Exception();
                     
                     _processorsManager.EnableProcessor(color);
+
+                    if (_shownProcessorTutorial == false)
+                    {
+                        FindObjectOfType<UIManager>().ShowTutorial(1);
+                        _shownProcessorTutorial = true;
+                    }
+                    
                 }
 
                 OnColorRemainingSet?.Invoke(orderColorIndex, count);

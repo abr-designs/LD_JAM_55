@@ -37,7 +37,7 @@ namespace Managers
         private void Start()
         {
             SetupAllButtons();
-            CloseWindow();
+            windowObject.SetActive(false);
         }
 
         private void OnDisable()

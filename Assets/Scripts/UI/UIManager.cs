@@ -4,6 +4,7 @@ using Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utilities;
 
@@ -53,6 +54,13 @@ namespace _PROTOTYPE.Scripts
         [SerializeField]
         private TransformAnimator countdownTransformAnimator;
 
+        [SerializeField, Header("Tutorial")]
+        private GameObject tutorialWindowObject;
+        [FormerlySerializedAs("tutorialButton")] [SerializeField]
+        private Button tutorialCloseButton;
+        [SerializeField]
+        private GameObject[] tutorialPanels;
+
         //Unit Functions
         //============================================================================================================//
         private void OnEnable()
@@ -72,6 +80,11 @@ namespace _PROTOTYPE.Scripts
             SetupGameUI();
             SetupButtons();
             SetupWindows();
+        }
+
+        private void Start()
+        {
+            ShowTutorial(0);
         }
 
         private void OnDisable()
@@ -106,12 +119,15 @@ namespace _PROTOTYPE.Scripts
         {
             restartGameButton.onClick.AddListener(OnRestartGameButtonPressed);
             mainMenuButton.onClick.AddListener(OnMainMenuButtonPressed);
+
+            tutorialCloseButton.onClick.AddListener(OnTutorialCloseButtonPressed);
         }
 
         private void SetupWindows()
         {
             //FIXME I think that the Upgrade window should live here
-            loseWindowObject.gameObject.SetActive(false);
+            loseWindowObject.SetActive(false);
+            tutorialWindowObject.SetActive(false);
         }
 
         //Lost Game Window
@@ -132,6 +148,30 @@ namespace _PROTOTYPE.Scripts
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(Globals.GAME_SCENE_INDEX);
+        }
+
+        //Tutorial Window
+        //============================================================================================================//
+
+        public void ShowTutorial(int tutorialIndex)
+        {
+            Time.timeScale = 0f;
+            MousePointer.SetActive(false);
+            UIMousePointer.SetActive(true);
+            tutorialWindowObject.SetActive(true);
+
+            for (int i = 0; i < tutorialPanels.Length; i++)
+            {
+                tutorialPanels[i].SetActive(i == tutorialIndex);
+            }
+        }
+
+        private void OnTutorialCloseButtonPressed()
+        {
+            Time.timeScale = 1f;
+            UIMousePointer.SetActive(false);
+            MousePointer.SetActive(true);
+            tutorialWindowObject.SetActive(false);
         }
 
         //Game UI Callbacks
