@@ -1,4 +1,5 @@
 using System;
+using Data;
 using Managers;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -78,7 +79,7 @@ public class CurrencyCollectible : MonoBehaviour
             if (sqrMag > pickupRadius * pickupRadius)
                 return;
             
-            OnPickedUpCurrency?.Invoke(currencyValue);
+            OnPickedUpCurrency?.Invoke(Mathf.RoundToInt(currencyValue * GlobalMults.RewardAmountMult));
             particleSystem.transform.SetParent(null, true);
             particleSystem.Stop();
             Destroy(gameObject);

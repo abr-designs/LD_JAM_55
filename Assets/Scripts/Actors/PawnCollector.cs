@@ -8,6 +8,8 @@ namespace Actors
     {
         public static event Action<COLOR> OnCollectedColor;
 
+        public bool canCollect;
+
         [SerializeField]
         private TransformAnimator transformAnimator;
         // Start is called before the first frame update
@@ -18,6 +20,12 @@ namespace Actors
 
         private void OnCollisionEnter2D(Collision2D other)
         {
+            if (canCollect == false)
+                return;
+
+            if (other.gameObject.CompareTag("Actor") == false)
+                return;
+            
             var actor = other.gameObject.GetComponent<PawnActor>();
             if (actor == null)
                 return;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Data;
 using Enums;
 using Managers;
 using UnityEngine;
@@ -8,8 +9,10 @@ using Random = UnityEngine.Random;
 
 namespace Actors
 {
-    public class SpawnerPrototype : MonoBehaviour
+    public class PawnSpawner : MonoBehaviour
     {
+        public bool IsActive => isActive;
+        
         [SerializeField]
         private bool isActive;
         [SerializeField, Min(1)]
@@ -67,7 +70,11 @@ namespace Actors
         {
             //Don't want to click while we're resetting
             if (isBusy)
+            {
+                busyTime += 0.05f * GlobalMults.TickleTimeMult;
+                _transformAnimator.Play();
                 return;
+            }
             
             //TODO Want to scale/wobble the item to feedback clicks
             if (_timesLeftToClick > 0)
@@ -91,7 +98,7 @@ namespace Actors
             _spriteRenderer.color = notReadyColor;
             particleSystem.Stop();
 
-            var waitTime = Random.Range(waitTimeRange.x, waitTimeRange.y);
+            var waitTime = Random.Range(waitTimeRange.x, waitTimeRange.y) * GlobalMults.SpawnerRegenTimeMult;
 
             StartCoroutine(ResetCoroutine(waitTime, () =>
             {
@@ -109,6 +116,11 @@ namespace Actors
 
             if (isActive == false && state)
             {
+                _isReady = false;
+                _timesLeftToClick = clickCost;
+                _spriteRenderer.color = notReadyColor;
+                particleSystem.Stop();
+                
                 var waitTime = Random.Range(waitTimeRange.x, waitTimeRange.y);
                 StartCoroutine(ResetCoroutine(waitTime, () =>
                 {
@@ -128,27 +140,29 @@ namespace Actors
         
 
         private bool isBusy;
+        private float busyTime;
+
         private IEnumerator ResetCoroutine(float time, Action onComplete)
         {
-            if(isBusy)
+            if (isBusy)
                 yield break;
 
             isBusy = true;
-            
+
             transform.localScale = Vector3.zero;
-            for (float t = 0; t < time; t+=Time.deltaTime)
+            for (busyTime = 0; busyTime < time; busyTime += Time.deltaTime)
             {
-                transform.localScale = _originalScale * (t / time);
-                
+                transform.localScale = _originalScale * (busyTime / time);
+
                 yield return null;
             }
 
             transform.localScale = _originalScale;
             isBusy = false;
-            
+
             onComplete?.Invoke();
         }
-        
+
         //============================================================================================================//
     }
 }

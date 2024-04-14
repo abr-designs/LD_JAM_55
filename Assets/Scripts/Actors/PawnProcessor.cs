@@ -8,6 +8,8 @@ namespace Actors
 {
     public class PawnProcessor : MonoBehaviour
     {
+        public COLOR OutColor => outColor;
+        
         [SerializeField]
         private COLOR inColor;
         [SerializeField, Min(1)]
@@ -33,11 +35,12 @@ namespace Actors
         private Color32 _unpaidColor;
 
         [SerializeField]
-        private TransformAnimator inAnimator;
+        private SpriteRenderer gemSpriteRenderer;
         [SerializeField]
-        private TransformAnimator outAnimator;
+        private SpriteRenderer[] portalRenderers;
+
         [SerializeField]
-        private TransformAnimator bodyAnimator;
+        private TransformAnimator portalAnimator;
 
         //Unity Functions
         //============================================================================================================//
@@ -47,9 +50,9 @@ namespace Actors
             if (_gameManager == null)
                 _gameManager = FindObjectOfType<GameManager>();
 
-            inAnimator.GetComponent<SpriteRenderer>().color = _gameManager.colors[(int)inColor];
-            outAnimator.GetComponent<SpriteRenderer>().color = _gameManager.colors[(int)outColor];
-            
+            SetPortalColor(inColor);
+            gemSpriteRenderer.color = _gameManager.colors[(int)outColor];
+
             SetupPaidUI();
         }
 
@@ -67,7 +70,7 @@ namespace Actors
                 return;
 
             _paid++;
-            inAnimator.Play();
+            portalAnimator.Play();
             UpdatePaid();
             
             Destroy(pawnActor.gameObject);
@@ -109,8 +112,8 @@ namespace Actors
         private void SpawnActor()
         {
             _paid = 0;
-            _gameManager.SpawnActor(outColor, outAnimator.transform.position);
-            outAnimator.Play();
+            _gameManager.SpawnActor(outColor, portalAnimator.transform.position);
+            portalAnimator.Play();
             
             UpdatePaid();
         }
@@ -118,13 +121,35 @@ namespace Actors
         private IEnumerator ProcessingCoroutine(float time)
         {
             processing = true;
-            bodyAnimator.Loop();
+            portalAnimator.Loop();
 
-            yield return new WaitForSeconds(time);
+            var inColor32 = _gameManager.colors[(int)this.inColor];
+            var outColor32 = _gameManager.colors[(int)this.outColor];
+            
+            for (float t = 0; t < time; t+= Time.deltaTime)
+            {
+                SetPortalColor(Color32.Lerp(inColor32, outColor32, t / time));
+                yield return null;
+            }
 
             SpawnActor();
-            bodyAnimator.Stop();
+            portalAnimator.Stop();
             processing = false;
+            SetPortalColor(inColor);
+        }
+
+        private void SetPortalColor(COLOR color)
+        {
+            var color32 = _gameManager.colors[(int)color];
+            SetPortalColor(color32);
+        }
+        
+        private void SetPortalColor(Color32 color)
+        {
+            for (int i = 0; i < portalRenderers.Length; i++)
+            {
+                portalRenderers[i].color = color;
+            }
         }
 
         //============================================================================================================//

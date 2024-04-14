@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1840255a9674dd78ae276a5f5461038, type: 3}
-  m_Name: Order Profile - 1
+  m_Name: Order Profile - 2
   m_EditorClassIdentifier: 
   redData:
     useColor: 1
     color: 0
-    countRange: {x: 2, y: 10}
+    countRange: {x: 4, y: 10}
     changeCurve:
       serializedVersion: 2
       m_Curve:
@@ -41,9 +41,9 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   blueData:
-    useColor: 0
+    useColor: 1
     color: 1
-    countRange: {x: 0, y: 0}
+    countRange: {x: 0, y: 5}
     changeCurve:
       serializedVersion: 2
       m_Curve:
@@ -124,7 +124,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  timeRange: {x: 15, y: 30}
+  timeRange: {x: 30, y: 60}
   changeTimeCurve:
     serializedVersion: 2
     m_Curve:
@@ -149,7 +149,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  rewardsRange: {x: 2, y: 10}
+  rewardsRange: {x: 5, y: 15}
   changeRewardsCurve:
     serializedVersion: 2
     m_Curve:

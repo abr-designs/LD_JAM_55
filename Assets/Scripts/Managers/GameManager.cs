@@ -54,6 +54,11 @@ namespace Managers
         private bool _countingDownOrderTime;
         private float _orderSecondsRemaining;
 
+        //Processors
+        //------------------------------------------------//
+
+        private ProcessorsManager _processorsManager;
+
         //Currency
         //------------------------------------------------//
        [SerializeField]
@@ -202,10 +207,23 @@ namespace Managers
         {
             for (int i = 0; i < order.orderDatas.Length; i++)
             {
-                var orderColorIndex = (int)order.orderDatas[i].color;
+                var color = order.orderDatas[i].color;
+                var orderColorIndex = (int)color;
                 var count = order.orderDatas[i].count;
 
                 _colorsToCollect[orderColorIndex] = count;
+
+                //We have a color thats not red, make sure we can do something with it
+                if (orderColorIndex > 0)
+                {
+                    if (_processorsManager == null)
+                        _processorsManager = FindObjectOfType<ProcessorsManager>();
+
+                    if (_processorsManager.HasProcessor(color) == false)
+                        throw new Exception();
+                    
+                    _processorsManager.EnableProcessor(color);
+                }
 
                 OnColorRemainingSet?.Invoke(orderColorIndex, count);
             }

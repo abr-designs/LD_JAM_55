@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections;
+using Actors;
+using Data;
 using UnityEngine;
 
 namespace _PROTOTYPE.Scripts
 {
     public class VanPrototype : MonoBehaviour
     {
+        [SerializeField]
+        private PawnCollector pawnCollector;
+        
         [SerializeField]
         private Vector2 startLocation;
         [SerializeField]
@@ -22,6 +27,16 @@ namespace _PROTOTYPE.Scripts
 
         private bool _isPlaying;
 
+        //Unity Functions
+        //============================================================================================================//
+
+        private void Start()
+        {
+            pawnCollector.canCollect = true;
+        }
+
+        //============================================================================================================//
+
         public void PlayAnimation(Action onAnimationComplete)
         {
             if (_isPlaying)
@@ -33,7 +48,9 @@ namespace _PROTOTYPE.Scripts
         private IEnumerator AnimateCoroutine(Action onAnimationComplete)
         {
             _isPlaying = true;
+            pawnCollector.canCollect = false;
             _transformAnimator.Loop();
+            var animationTime = this.animationTime * GlobalMults.DeliveryResetTimeMult;
             var halfTime = animationTime / 2f;
 
             transform.position = startLocation;
@@ -63,6 +80,7 @@ namespace _PROTOTYPE.Scripts
             transform.position = startLocation;
             
             _transformAnimator.Stop();
+            pawnCollector.canCollect = true;
             onAnimationComplete?.Invoke();
 
             _isPlaying = false;

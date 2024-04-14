@@ -4886,6 +4886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0754ae39df3248d8b6e7890772c7222f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActive: 0
   spawnCount: 2
   spawnColor: 0
   cost: 0
@@ -4896,7 +4897,7 @@ MonoBehaviour:
   notReadyColor:
     serializedVersion: 2
     rgba: 4280168614
-  waitTimeRange: {x: 10, y: 10}
+  waitTimeRange: {x: 8, y: 8}
   particleSystem: {fileID: 523993714343788235}
 --- !u!114 &3561479059383966736
 MonoBehaviour:
@@ -5091,7 +5092,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1410056495, guid: 9dc0d84caaf317148a736fb31f1b8a33, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 51aae63b2b24da748aac2b4accd811ef, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5137,7 +5138,7 @@ PolygonCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
+    pivot: {x: 0.49832162, y: 0.052030917}
     oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5

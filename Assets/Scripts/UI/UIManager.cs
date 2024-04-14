@@ -53,7 +53,7 @@ namespace _PROTOTYPE.Scripts
 
 
 
-        private void Start()
+        private void Awake()
         {
             SetupUI();
         }
