@@ -11,6 +11,20 @@ namespace Managers
         [SerializeField]
         private PawnProcessor[] Processors;
 
+        //Unity Functions
+        //============================================================================================================//
+
+        private void Start()
+        {
+            foreach (var processor in Processors)
+            {
+                processor.gameObject.SetActive(false);
+            }
+        }
+        
+        //Methods
+        //============================================================================================================//
+        
         public bool HasProcessor(COLOR outColor)
         {
             return Processors.Any(x => x.OutColor == outColor);

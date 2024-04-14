@@ -185,8 +185,8 @@ namespace _PROTOTYPE.Scripts
             var timeSpan = TimeSpan.FromSeconds(secondsRemaining);
             var mins = timeSpan.Minutes;
             var sec = timeSpan.Seconds;
-            countDownText.text = $"{prefix} {(mins > 0 ? $"{mins}m " : "")}{sec}s";
             
+            countDownText.text = $"{prefix} {(mins > 0 ? $"{mins}m " : "")}{sec}s";
         }
         
         private void OnCurrencyChanged(int currencyCount)

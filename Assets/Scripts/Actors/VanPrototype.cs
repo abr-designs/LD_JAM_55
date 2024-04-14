@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Actors;
 using Data;
 using UnityEngine;
+using Utilities;
+using Random = UnityEngine.Random;
 
 namespace _PROTOTYPE.Scripts
 {
@@ -25,6 +28,15 @@ namespace _PROTOTYPE.Scripts
         [SerializeField]
         private TransformAnimator _transformAnimator;
 
+        [SerializeField]
+        private SimpleSpin[] simpleSpinners;
+
+        [SerializeField]
+        private SpriteRenderer cageSpriteRenderer;
+        [SerializeField]
+        private TransformAnimator cageAnimator;
+        private List<GameObject> _toDestroy;
+
         private UIManager _uiManager;
 
         private bool _isPlaying;
@@ -34,11 +46,38 @@ namespace _PROTOTYPE.Scripts
 
         private void Start()
         {
-            pawnCollector.canCollect = true;
+            pawnCollector.CanCollect = true;
             _uiManager = FindObjectOfType<UIManager>();
+            ActivateSpinners(false);
+            _toDestroy = new List<GameObject>();
         }
 
         //============================================================================================================//
+
+        public void AddToCage(PawnActor pawnActor)
+        {
+            cageAnimator.Play();
+            
+            var bounds = cageSpriteRenderer.localBounds;
+
+            _toDestroy.Add(pawnActor.gameObject);
+            
+            pawnActor.transform.SetParent(cageSpriteRenderer.transform, false);
+            pawnActor.transform.localPosition = Random.insideUnitCircle * bounds.extents.x;
+            pawnActor.transform.localRotation = Quaternion.Euler(0f,0f, Random.value * 360f);
+            
+            pawnActor.enabled = false;
+        }
+
+        private void CleanCage()
+        {
+            for (int i = 0; i < _toDestroy.Count; i++)
+            {
+                Destroy(_toDestroy[i]);
+            }
+            
+            _toDestroy.Clear();
+        }
 
         public void PlayAnimation(Action onAnimationComplete)
         {
@@ -46,14 +85,14 @@ namespace _PROTOTYPE.Scripts
                 return;
             
             StartCoroutine(AnimateCoroutine(onAnimationComplete));
-            
         }
 
         private IEnumerator AnimateCoroutine(Action onAnimationComplete)
         {
             _isPlaying = true;
-            pawnCollector.canCollect = false;
+            pawnCollector.CanCollect = false;
             _transformAnimator.Loop();
+            ActivateSpinners(true);
             var animationTime = this.animationTime * GlobalMults.DeliveryResetTimeMult;
 
             StartCoroutine(CountdownCoroutine(animationTime));
@@ -73,6 +112,7 @@ namespace _PROTOTYPE.Scripts
             transform.position = endLocation;
             
             //TODO Determine if we need a pause time here
+            CleanCage();
             
             for (float t = 0; t < halfTime; t+= Time.deltaTime)
             {
@@ -85,11 +125,20 @@ namespace _PROTOTYPE.Scripts
             
             transform.position = startLocation;
             
+            ActivateSpinners(false);
             _transformAnimator.Stop();
-            pawnCollector.canCollect = true;
+            pawnCollector.CanCollect = true;
             onAnimationComplete?.Invoke();
 
             _isPlaying = false;
+        }
+
+        private void ActivateSpinners(bool state)
+        {
+            for (int i = 0; i < simpleSpinners.Length; i++)
+            {
+                simpleSpinners[i].enabled = state;
+            }
         }
 
         private IEnumerator CountdownCoroutine(float time)

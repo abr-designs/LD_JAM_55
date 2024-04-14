@@ -79,13 +79,15 @@ namespace Actors
 
         private void OnMouseDown()
         {
-            //When spawning in I don't want them to be grabbed
-            if (_currentState == STATE.SPAWN)
-                return;
-        
             SetState(STATE.HOLD);
         }
-    
+
+        private void OnDisable()
+        {
+            _rigidbody2D.simulated = false;
+            _rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        }
+
         //============================================================================================================//
 
         public void Init(COLOR color, GameManager gameManager)

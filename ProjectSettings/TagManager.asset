@@ -39,6 +39,21 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 2894660891
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Actors
+    uniqueID: 2076394029
+    locked: 0
+  - name: Vehicle
+    uniqueID: 2085281891
+    locked: 0
+  - name: Foreground
+    uniqueID: 806375101
+    locked: 0
+  - name: IngameUI
+    uniqueID: 1386171799
     locked: 0

@@ -1,4 +1,5 @@
 using System;
+using _PROTOTYPE.Scripts;
 using Enums;
 using Managers;
 using UnityEngine;
@@ -9,10 +10,19 @@ namespace Actors
     {
         public static event Action<COLOR> OnCollectedColor;
 
-        public bool canCollect;
+        public bool CanCollect
+        {
+            get => _canCollect;
+            set => SetCanCollect(value);
+        }
+
+        private bool _canCollect;
 
         [SerializeField]
-        private TransformAnimator transformAnimator;
+        private VanPrototype vanPrototype;
+
+        [SerializeField]
+        private Collider2D collider2D;
 
         //Unity Functions
         //============================================================================================================//
@@ -30,7 +40,7 @@ namespace Actors
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if (canCollect == false)
+            if (_canCollect == false)
                 return;
 
             if (other.gameObject.CompareTag("Actor") == false)
@@ -41,8 +51,8 @@ namespace Actors
                 return;
         
             OnCollectedColor?.Invoke(actor.ActorColor);
-            transformAnimator?.Play();
-            Destroy(actor.gameObject);
+            vanPrototype.AddToCage(actor);
+            //Destroy(actor.gameObject);
         }
 
         private void OnDisable()
@@ -50,12 +60,20 @@ namespace Actors
             GameManager.OnGameLost -= OnGameLost;
         }
 
+        //============================================================================================================//
+
+        private void SetCanCollect(bool state)
+        {
+            collider2D.enabled = state;
+            _canCollect = state;
+        }
+
         //Callbacks
         //============================================================================================================//
 
         private void OnGameLost()
         {
-            canCollect = false;
+            SetCanCollect(false);
         }
         
         //============================================================================================================//
