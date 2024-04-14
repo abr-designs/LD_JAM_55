@@ -48,6 +48,8 @@ namespace _PROTOTYPE.Scripts
         [SerializeField, Header("Countdown Text")]
         private TMP_Text countDownText;
         [SerializeField]
+        private TMP_Text countDownTitleText;
+        [SerializeField]
         private TransformAnimator countdownTransformAnimator;
 
         //Unit Functions
@@ -185,8 +187,9 @@ namespace _PROTOTYPE.Scripts
             var timeSpan = TimeSpan.FromSeconds(secondsRemaining);
             var mins = timeSpan.Minutes;
             var sec = timeSpan.Seconds;
-            
-            countDownText.text = $"{prefix} {(mins > 0 ? $"{mins}m " : "")}{sec}s";
+
+            countDownTitleText.text = prefix;
+            countDownText.text = $"{mins:00}:{sec:00}";
         }
         
         private void OnCurrencyChanged(int currencyCount)
