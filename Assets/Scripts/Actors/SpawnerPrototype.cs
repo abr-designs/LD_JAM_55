@@ -10,6 +10,8 @@ namespace Actors
 {
     public class SpawnerPrototype : MonoBehaviour
     {
+        [SerializeField]
+        private bool isActive;
         [SerializeField, Min(1)]
         private int spawnCount;
         [SerializeField]
@@ -38,6 +40,9 @@ namespace Actors
         private static GameManager _gameManager;
         private TransformAnimator _transformAnimator;
 
+        [SerializeField]
+        private ParticleSystem particleSystem;
+
         //Unity Functions
         //============================================================================================================//
         
@@ -53,6 +58,9 @@ namespace Actors
 
             _timesLeftToClick = clickCost;
             _originalScale = transform.localScale;
+
+            if (isActive == false)
+                SetActive(isActive);
         }
         
         private void OnMouseDown()
@@ -81,14 +89,43 @@ namespace Actors
             _isReady = false;
             _timesLeftToClick = clickCost;
             _spriteRenderer.color = notReadyColor;
+            particleSystem.Stop();
 
             var waitTime = Random.Range(waitTimeRange.x, waitTimeRange.y);
 
             StartCoroutine(ResetCoroutine(waitTime, () =>
             {
                 _spriteRenderer.color = readyColor;
+                particleSystem.Play();
+                particleSystem.Emit(2);
             }));
         }
+
+        //============================================================================================================//
+
+        public void SetActive(bool state)
+        {
+            _spriteRenderer.enabled = state;
+
+            if (isActive == false && state)
+            {
+                var waitTime = Random.Range(waitTimeRange.x, waitTimeRange.y);
+                StartCoroutine(ResetCoroutine(waitTime, () =>
+                {
+                    _spriteRenderer.color = readyColor;
+                    particleSystem.Play();
+                    particleSystem.Emit(2);
+                }));
+            }
+
+            if (state == false)
+                particleSystem.Stop();
+                
+            isActive = state;
+        }
+        
+        //============================================================================================================//
+        
 
         private bool isBusy;
         private IEnumerator ResetCoroutine(float time, Action onComplete)

@@ -3,6 +3,7 @@ using _PROTOTYPE.Scripts;
 using Actors;
 using Data;
 using Enums;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -54,7 +55,17 @@ namespace Managers
 
         //Currency
         //------------------------------------------------//
-
+       [SerializeField]
+        private CurrencyCollectible currencyCollectiblePrefab;
+       [SerializeField]
+        private Vector2 currencySpawnLocation;
+       [SerializeField]
+        private Vector2 currencySpawnDirection;
+       [FormerlySerializedAs("currencySpawnAngleRange")] [SerializeField, Min(0f)]
+        private float currencySpawnAngle;
+       [SerializeField]
+        private Vector2 currencySpawnForceRange;
+        
         private int _currency;
 
         //Colors
@@ -73,6 +84,7 @@ namespace Managers
         private void OnEnable()
         {
             PawnCollector.OnCollectedColor += OnCollectedColor;
+            CurrencyCollectible.OnPickedUpCurrency += OnPickedUpCurrency;
         }
 
         // Start is called before the first frame update
@@ -112,6 +124,7 @@ namespace Managers
         private void OnDisable()
         {
             PawnCollector.OnCollectedColor -= OnCollectedColor;
+            CurrencyCollectible.OnPickedUpCurrency -= OnPickedUpCurrency;
         }
 
         //============================================================================================================//
@@ -141,6 +154,21 @@ namespace Managers
 
             var temp = Instantiate(pawnActorPrefab, position, Quaternion.identity, actorContainerTransform);
             temp.Init(color, this);
+        }
+
+        //Spawn Currency Collectibles
+        //============================================================================================================//
+
+        private void SpawnCurrencyCollectibles(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var dir = Quaternion.Euler(0f, 0f, Random.Range(-currencySpawnAngle, currencySpawnAngle)) * currencySpawnDirection.normalized;
+                var force = Random.Range(currencySpawnForceRange.x, currencySpawnForceRange.y);
+
+                var instance = Instantiate(currencyCollectiblePrefab, currencySpawnLocation, quaternion.identity);
+                instance.Launch(dir * force);
+            }
         }
 
         //Public Methods
@@ -217,8 +245,7 @@ namespace Managers
             
                 // - Add Points
                 //TODO Make this more interesting by having them drop out of the van
-                _currency += orders[_orderIndex].reward;
-                OnCurrencyChanged?.Invoke(_currency);
+                SpawnCurrencyCollectibles(orders[_orderIndex].collectibleDrops);
                 // - Do Animation
                 // - Countdown to next order?
                 // - Setup Next Order
@@ -232,6 +259,12 @@ namespace Managers
         
             OnColorRemainingChanged?.Invoke(colorIndex, _colorsToCollect[colorIndex]);
         }
+        
+        private void OnPickedUpCurrency(int toAdd)
+        {
+            _currency += toAdd;
+            OnCurrencyChanged?.Invoke(_currency);
+        }
 
         //Unity Editor
         //============================================================================================================//
@@ -242,6 +275,24 @@ namespace Managers
         {
             Gizmos.color =Color.green;
             Gizmos.DrawWireCube(spawnLocationCenter, spawnArea);
+
+            //Currency Spawns
+            //------------------------------------------------//
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(currencySpawnLocation, 0.25f);
+            
+            Gizmos.color =Color.green;
+            Gizmos.DrawLine(currencySpawnLocation, currencySpawnLocation + currencySpawnDirection.normalized);
+            
+            var dir1 = Quaternion.Euler(0f, 0f, -currencySpawnAngle) * currencySpawnDirection.normalized;
+            var dir2 = Quaternion.Euler(0f, 0f, currencySpawnAngle) * currencySpawnDirection.normalized;
+            
+            Gizmos.color =Color.yellow;
+            Gizmos.DrawLine(currencySpawnLocation, currencySpawnLocation + (Vector2)dir1.normalized);
+            Gizmos.DrawLine(currencySpawnLocation, currencySpawnLocation + (Vector2)dir2.normalized);
+            
+            //------------------------------------------------//
         
             if (Application.isPlaying == false)
                 return;

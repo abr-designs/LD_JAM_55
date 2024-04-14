@@ -21,8 +21,12 @@ namespace _PROTOTYPE.Scripts
         private TransformAnimator[] _transformAnimators = new TransformAnimator[COLOR_COUNT];
         [SerializeField]
         private TextMeshPro countDownText;
-        [SerializeField]
+        
+        
+        [SerializeField, Header("Currency")]
         private TextMeshPro currencyText;
+        [SerializeField]
+        private TransformAnimator currencyTransformAnimator;
 
         //Unit Functions
         //============================================================================================================//
@@ -33,7 +37,11 @@ namespace _PROTOTYPE.Scripts
             GameManager.OnColorRemainingChanged += UpdateColorsToCollectUI;
             GameManager.OnColorRemainingSet += SetupOrderUI;
             GameManager.OnOrderCompleted += ResetOrderUI;
+            
+            CurrencyCollectible.OnPickedUpCurrency += OnPickedUpCurrency;
         }
+
+
 
         private void Start()
         {
@@ -117,6 +125,11 @@ namespace _PROTOTYPE.Scripts
         private void OnCurrencyChanged(int currencyCount)
         {
             currencyText.text = currencyCount.ToString();
+        }
+        
+        private void OnPickedUpCurrency(int _)
+        {
+            currencyTransformAnimator.Play();
         }
         
         //============================================================================================================//

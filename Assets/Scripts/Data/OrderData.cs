@@ -19,7 +19,7 @@ namespace Data
         private string name;
 
         [SerializeField, Min(0)]
-        public int reward;
+        public int collectibleDrops;
 
         [SerializeField, Min(0f)]
         public float orderTime;

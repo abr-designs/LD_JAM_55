@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &233211361629096749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3734142840369789716}
+  - component: {fileID: 7194276666632027766}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3734142840369789716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233211361629096749}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7194276666632027766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 233211361629096749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec16a1c89fea26a47a1abb1d05cf58f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pawnActorPrefab: {fileID: 6499295630993678920, guid: 9c7cd9937ed78314a9c07643f21b3f4a, type: 3}
+  actorContainerTransform: {fileID: 0}
+  spawnLocationCenter: {x: -5.11, y: -2.32}
+  spawnArea: {x: 6.62, y: 4.29}
+  spawnCount: 0
+  orders:
+  - name: Test
+    collectibleDrops: 2
+    orderTime: 15
+    orderDatas:
+    - color: 0
+      count: 2
+  van: {fileID: 0}
+  currencyCollectiblePrefab: {fileID: 6474768893842762981, guid: 0065fbefa5bb6214581f4554b2e8cb3b, type: 3}
+  currencySpawnLocation: {x: 5.24, y: -1.99}
+  currencySpawnDirection: {x: -1.36, y: 1.19}
+  currencySpawnAngle: 30
+  currencySpawnForceRange: {x: 5, y: 15}
+  colors:
+  - serializedVersion: 2
+    rgba: 4281158143
+  - serializedVersion: 2
+    rgba: 4294940461
+  - serializedVersion: 2
+    rgba: 4285646157
+  - serializedVersion: 2
+    rgba: 4294143917
+  colorCount: 00000000000000000000000000000000
