@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using _PROTOTYPE.Scripts;
 using Actors;
-using Data;
 using Enums;
+using Orders;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -251,8 +252,8 @@ namespace Managers
                 // - Setup Next Order
                 van.PlayAnimation(() =>
                 {
-                    //FIXME Make this progress
-                    SetupOrder(orders[0]);
+                    _orderIndex++;
+                    SetupOrder(orders[_orderIndex]);
                 });
 
             }
@@ -270,6 +271,23 @@ namespace Managers
         //============================================================================================================//
 
 #if UNITY_EDITOR
+
+        [SerializeField, Header("EDITOR ONLY - Order Generation")]
+        private OrderGenerationData[] orderGenerationData;
+
+        [ContextMenu("Generate Orders")]
+        private void GenerateOrders()
+        {
+            var orders = new List<Order>();
+
+            for (int i = 0; i < orderGenerationData.Length; i++)
+            {
+                orders.AddRange(orderGenerationData[i].GenerateOrders());
+            }
+
+            this.orders = orders.ToArray();
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
     
         private void OnDrawGizmos()
         {

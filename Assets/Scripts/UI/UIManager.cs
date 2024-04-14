@@ -11,6 +11,16 @@ namespace _PROTOTYPE.Scripts
 
         //============================================================================================================//
 
+        private GameManager GameManager
+        {
+            get
+            {
+                if (_gameManager == null)
+                    _gameManager = FindObjectOfType<GameManager>();
+
+                return _gameManager;
+            }
+        }
         private GameManager _gameManager;
         
         [SerializeField, Header("UI")]
@@ -45,8 +55,6 @@ namespace _PROTOTYPE.Scripts
 
         private void Start()
         {
-            _gameManager = FindObjectOfType<GameManager>();
-            
             SetupUI();
         }
 
@@ -89,7 +97,7 @@ namespace _PROTOTYPE.Scripts
         {
             var isVisible = count > 0;
             
-            _spriteRenderers[colorIndex].color = _gameManager.colors[colorIndex];
+            _spriteRenderers[colorIndex].color = GameManager.colors[colorIndex];
             _spriteRenderers[colorIndex].gameObject.SetActive(isVisible);
             _textMeshPros[colorIndex].gameObject.SetActive(isVisible);
 

@@ -2,7 +2,7 @@
 using Enums;
 using UnityEngine;
 
-namespace Data
+namespace Orders
 {
     [Serializable]
     public class Order
