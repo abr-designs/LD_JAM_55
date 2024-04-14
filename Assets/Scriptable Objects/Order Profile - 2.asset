@@ -15,25 +15,25 @@ MonoBehaviour:
   redData:
     useColor: 1
     color: 0
-    countRange: {x: 4, y: 10}
+    countRange: {x: 5, y: 10}
     changeCurve:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
         time: 0
         value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
         value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 34
         weightedMode: 0
         inWeight: 0
         outWeight: 0
@@ -43,7 +43,7 @@ MonoBehaviour:
   blueData:
     useColor: 1
     color: 1
-    countRange: {x: 0, y: 5}
+    countRange: {x: 1, y: 5}
     changeCurve:
       serializedVersion: 2
       m_Curve:

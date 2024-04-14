@@ -6,6 +6,7 @@ using Data;
 using Enums;
 using Managers;
 using UnityEngine;
+using Utilities;
 using Utilities.ReadOnly;
 using Random = UnityEngine.Random;
 
@@ -47,6 +48,9 @@ namespace Actors
 
         [SerializeField]
         private ParticleSystem particleSystem;
+
+        [SerializeField]
+        private PhysicsLauncher launcherData;
 
         //Unity Functions
         //============================================================================================================//
@@ -95,7 +99,7 @@ namespace Actors
             if (_isReady == false)
                 return;
             
-            _gameManager.SpawnActors(spawnColor, spawnCount, transform.position);
+            _gameManager.SpawnActors(spawnColor, spawnCount, launcherData);
             _isReady = false;
             _timesLeftToClick = clickCost;
             _spriteRenderer.color = notReadyColor;
@@ -168,5 +172,14 @@ namespace Actors
         }
 
         //============================================================================================================//
+
+#if UNITY_EDITOR
+
+        private void OnDrawGizmos()
+        {
+            launcherData.DrawGizmos();
+        }
+
+#endif
     }
 }

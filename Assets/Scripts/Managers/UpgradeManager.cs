@@ -16,6 +16,9 @@ namespace Managers
 
         [SerializeField]
         private SpawnersManager SpawnersManager;
+        
+        [SerializeField]
+        private ProcessorsManager processorsManager;
 
         [SerializeField]
         private Button[] buttons;
@@ -55,6 +58,7 @@ namespace Managers
             buttons[2].onClick.AddListener(OnDeliveryResetTimeButtonPressed);
             buttons[3].onClick.AddListener(OnTickleTimeButtonPressed);
             buttons[4].onClick.AddListener(OnRewardsButtonPressed);
+            buttons[5].onClick.AddListener(OnProcessingTimeButtonPressed);
             
             
             buttonsText[0].text = GlobalMults.SpawnerText;
@@ -62,6 +66,7 @@ namespace Managers
             buttonsText[2].text = GlobalMults.DeliveryResetTimeText;
             buttonsText[3].text = GlobalMults.TickleTimeText;
             buttonsText[4].text = GlobalMults.RewardAmountText;
+            buttonsText[5].text = GlobalMults.ProcessingTimeText;
 
             for (int i = 0; i < buttons.Length; i++)
             {
@@ -102,14 +107,18 @@ namespace Managers
             {
                 buttons[i].gameObject.SetActive(false);
             }
-            var options = new List<int>(5)
+            var options = new List<int>(6)
             {
-                0, 1, 2, 3, 4
+                0, 1, 2, 3, 4, 5
             };
 
             //Want to be at least level 3 to obtain the extra spawners
             if (SpawnersManager.HasLockedSpawners() == false || _levelIndex < 2)
-                options.RemoveAt(0);
+                options.Remove(0);
+            
+            //If there aren't any processors, there's no point in showing it as an option
+            if (processorsManager.HasActiveProcessor() == false)
+                options.Remove(5);
             
             //TODO Pick random buttons to show
             for (var i = 0; i < count; i++)
@@ -159,6 +168,11 @@ namespace Managers
         private void OnRewardsButtonPressed()
         {
             GlobalMults.RewardAmountMult *= 1f + GlobalMults.RewardAmountMultDelta;
+            CloseWindow();
+        }
+        private void OnProcessingTimeButtonPressed()
+        {
+            GlobalMults.ProcessingTime *= 1f + GlobalMults.ProcessTimeMultDelta;
             CloseWindow();
         }
         

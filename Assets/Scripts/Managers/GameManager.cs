@@ -4,6 +4,7 @@ using _PROTOTYPE.Scripts;
 using Actors;
 using Audio;
 using Audio.SoundFX;
+using Data;
 using Enums;
 using Orders;
 using Unity.Mathematics;
@@ -11,6 +12,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Managers
@@ -67,14 +69,8 @@ namespace Managers
         //------------------------------------------------//
        [SerializeField]
         private CurrencyCollectible currencyCollectiblePrefab;
-       [SerializeField]
-        private Vector2 currencySpawnLocation;
-       [SerializeField]
-        private Vector2 currencySpawnDirection;
-       [FormerlySerializedAs("currencySpawnAngleRange")] [SerializeField, Min(0f)]
-        private float currencySpawnAngle;
-       [SerializeField]
-        private Vector2 currencySpawnForceRange;
+        [SerializeField]
+        private PhysicsLauncher currencyLauncher;
         
         private int _currency;
 
@@ -169,6 +165,8 @@ namespace Managers
         {
             Debug.Log($"Lost on Order[{_orderIndex}]");
             
+            GlobalMults.ResetValues();
+            
             _countingDownOrderTime = false;
             Time.timeScale = 0.01f;
             OnGameLost?.Invoke();
@@ -186,11 +184,11 @@ namespace Managers
             }
         }
     
-        public void SpawnActors(COLOR color, int count, Vector2 position)
+        public void SpawnActors(COLOR color, int count, PhysicsLauncher launchData)
         {
             for (int i = 0; i < count; i++)
             {
-                SpawnActor(color, position);
+                SpawnActor(color, launchData);
             }
         }
 
@@ -200,7 +198,15 @@ namespace Managers
             colorCount[colorIndex]++;
 
             var temp = Instantiate(pawnActorPrefab, position, Quaternion.identity, actorContainerTransform);
-            temp.Init(color, this);
+            temp.Init(color, this, default);
+        }
+        public void SpawnActor(COLOR color, PhysicsLauncher launcherData)
+        {
+            var colorIndex = (int)color;
+            colorCount[colorIndex]++;
+
+            var temp = Instantiate(pawnActorPrefab, launcherData.SpawnLocation, Quaternion.identity, actorContainerTransform);
+            temp.Init(color, this, launcherData);
         }
 
         //Spawn Currency Collectibles
@@ -211,11 +217,10 @@ namespace Managers
             SFX.EXPLODE.PlaySound();
             for (int i = 0; i < count; i++)
             {
-                var dir = Quaternion.Euler(0f, 0f, Random.Range(-currencySpawnAngle, currencySpawnAngle)) * currencySpawnDirection.normalized;
-                var force = Random.Range(currencySpawnForceRange.x, currencySpawnForceRange.y);
+                var velocity = currencyLauncher.GetLaunchVelocity();
 
-                var instance = Instantiate(currencyCollectiblePrefab, currencySpawnLocation, quaternion.identity);
-                instance.Launch(dir * force);
+                var instance = Instantiate(currencyCollectiblePrefab, currencyLauncher.SpawnLocation, quaternion.identity);
+                instance.Launch(velocity);
             }
         }
 
@@ -350,18 +355,7 @@ namespace Managers
             //Currency Spawns
             //------------------------------------------------//
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(currencySpawnLocation, 0.25f);
-            
-            Gizmos.color =Color.green;
-            Gizmos.DrawLine(currencySpawnLocation, currencySpawnLocation + currencySpawnDirection.normalized);
-            
-            var dir1 = Quaternion.Euler(0f, 0f, -currencySpawnAngle) * currencySpawnDirection.normalized;
-            var dir2 = Quaternion.Euler(0f, 0f, currencySpawnAngle) * currencySpawnDirection.normalized;
-            
-            Gizmos.color =Color.yellow;
-            Gizmos.DrawLine(currencySpawnLocation, currencySpawnLocation + (Vector2)dir1.normalized);
-            Gizmos.DrawLine(currencySpawnLocation, currencySpawnLocation + (Vector2)dir2.normalized);
+            currencyLauncher.DrawGizmos();
             
             //------------------------------------------------//
         

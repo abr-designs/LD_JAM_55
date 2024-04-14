@@ -43,7 +43,7 @@ MonoBehaviour:
   blueData:
     useColor: 1
     color: 1
-    countRange: {x: 3, y: 10}
+    countRange: {x: 1, y: 4}
     changeCurve:
       serializedVersion: 2
       m_Curve:
@@ -71,7 +71,7 @@ MonoBehaviour:
   greenData:
     useColor: 1
     color: 2
-    countRange: {x: 0, y: 10}
+    countRange: {x: 1, y: 4}
     changeCurve:
       serializedVersion: 2
       m_Curve:

@@ -21,7 +21,7 @@ namespace Orders
 
             public int GetOrderCount(float t)
             {
-                return Mathf.RoundToInt(Mathf.Lerp(countRange.x, countRange.y, changeCurve.Evaluate(t)));
+                return Mathf.CeilToInt(Mathf.Lerp(countRange.x, countRange.y, changeCurve.Evaluate(t)));
             }
         }
         
@@ -47,7 +47,7 @@ namespace Orders
 
             for (int i = 0; i < count; i++)
             {
-                var dt = (i + 1f) / count;
+                var dt = (i) / (float)count;
                 var orderDatas = new List<Order.OrderData>(GameManager.COLOR_COUNT);
                 for (int ii = 0; ii < GameManager.COLOR_COUNT; ii++)
                 {

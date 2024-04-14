@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections;
+using Audio;
+using Audio.SoundFX;
+using Data;
 using Enums;
 using Managers;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Utilities;
 
 namespace Actors
 {
@@ -42,6 +46,9 @@ namespace Actors
 
         [SerializeField]
         private TransformAnimator portalAnimator;
+
+        [SerializeField]
+        private PhysicsLauncher launcherData;
 
         //Unity Functions
         //============================================================================================================//
@@ -83,7 +90,8 @@ namespace Actors
 
             if (_paid == inCost)
             {
-                StartCoroutine(ProcessingCoroutine(processingTime));
+                SFX.EXPLODE.PlaySound();
+                StartCoroutine(ProcessingCoroutine(processingTime * GlobalMults.ProcessingTime));
             }
         }
         
@@ -123,7 +131,8 @@ namespace Actors
         private void SpawnActor()
         {
             _paid = 0;
-            _gameManager.SpawnActor(outColor, portalAnimator.transform.position);
+            _gameManager.SpawnActor(outColor, launcherData);
+            SFX.EXPLODE.PlaySound();
             portalAnimator.Play();
             
             UpdatePaid();
@@ -172,5 +181,14 @@ namespace Actors
         }
 
         //============================================================================================================//
+        
+#if UNITY_EDITOR
+
+        private void OnDrawGizmos()
+        {
+            launcherData.DrawGizmos();
+        }
+
+#endif
     }
 }

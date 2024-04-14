@@ -4,6 +4,7 @@ using Audio.SoundFX;
 using Enums;
 using Managers;
 using UnityEngine;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Actors
@@ -32,6 +33,8 @@ namespace Actors
         private SpriteRenderer _spriteRenderer;
         private TransformAnimator _transformAnimator;
 
+        private PhysicsLauncher _launchData;
+        
         private Vector2 _velocity;
         private Vector2 _previousPos;
         private Vector2 _currentPos;
@@ -92,7 +95,7 @@ namespace Actors
 
         //============================================================================================================//
 
-        public void Init(COLOR color, GameManager gameManager)
+        public void Init(COLOR color, GameManager gameManager, PhysicsLauncher launcherData)
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _transformAnimator = GetComponent<TransformAnimator>();
@@ -102,6 +105,8 @@ namespace Actors
         
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _spriteRenderer.color = _gameManager.colors[(int)ActorColor];
+
+            _launchData = launcherData;
         
             SetState(STATE.SPAWN);
         }
@@ -130,9 +135,7 @@ namespace Actors
                     _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
                     _moveLocation = _gameManager.GetRandomPosition();
 
-                    var spawnDir = Random.insideUnitCircle.normalized;
-                    spawnDir.y = Mathf.Abs(spawnDir.y);
-                    _rigidbody2D.AddForce(spawnDir * Random.Range(spawnForceMult/2f,spawnForceMult), ForceMode2D.Impulse);
+                    _rigidbody2D.AddForce(_launchData.GetLaunchVelocity(), ForceMode2D.Impulse);
                     _rigidbody2D.AddTorque(Random.Range(-25,25));
                     break;
                 case STATE.IDLE:
@@ -145,6 +148,7 @@ namespace Actors
                     _moveLocation = _gameManager.GetRandomPosition();
                     _spriteRenderer.flipX = (_moveLocation.x - transform.position.x) > 0f;
                 
+                    _transformAnimator.Stop();
                     transform.localRotation = Quaternion.identity;
                     break;
                 case STATE.THROW:

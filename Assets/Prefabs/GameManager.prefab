@@ -58,10 +58,11 @@ MonoBehaviour:
       count: 2
   van: {fileID: 0}
   currencyCollectiblePrefab: {fileID: 6474768893842762981, guid: 0065fbefa5bb6214581f4554b2e8cb3b, type: 3}
-  currencySpawnLocation: {x: 5.24, y: -1.99}
-  currencySpawnDirection: {x: -1.36, y: 1.19}
-  currencySpawnAngle: 30
-  currencySpawnForceRange: {x: 5, y: 15}
+  currencyLauncher:
+    spawnLocation: {x: 5.24, y: -1.99}
+    spawnDirection: {x: -1.36, y: 1.19}
+    spawnAngle: 30
+    spawnForceRange: {x: 5, y: 15}
   colors:
   - serializedVersion: 2
     rgba: 4281158143
@@ -72,3 +73,13 @@ MonoBehaviour:
   - serializedVersion: 2
     rgba: 4294143917
   colorCount: 00000000000000000000000000000000
+  orderGenerationData:
+  - name: Part 1 - Red
+    profile: {fileID: 11400000, guid: 05544d478c4cf92428af279974e0435d, type: 2}
+    ordersToGenerate: 3
+  - name: Part 2 - Red, BLue
+    profile: {fileID: 11400000, guid: 3bac63c950551be4ab389237a892b720, type: 2}
+    ordersToGenerate: 4
+  - name: Part 2 - Red, BLue
+    profile: {fileID: 11400000, guid: e7d5f9a1a1fa6c243befe06a1636d56d, type: 2}
+    ordersToGenerate: 4

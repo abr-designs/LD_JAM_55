@@ -25,6 +25,11 @@ namespace Managers
         //Methods
         //============================================================================================================//
         
+        public bool HasActiveProcessor()
+        {
+            return Processors.Any(x => x.gameObject.activeInHierarchy);
+        }
+        
         public bool HasProcessor(COLOR outColor)
         {
             return Processors.Any(x => x.OutColor == outColor);

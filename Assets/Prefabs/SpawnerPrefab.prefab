@@ -4899,6 +4899,11 @@ MonoBehaviour:
     rgba: 4280168614
   waitTimeRange: {x: 8, y: 8}
   particleSystem: {fileID: 523993714343788235}
+  launcherData:
+    spawnLocation: {x: 0, y: 0}
+    spawnDirection: {x: 1, y: 0}
+    spawnAngle: 37.42
+    spawnForceRange: {x: 5, y: 15}
 --- !u!114 &3561479059383966736
 MonoBehaviour:
   m_ObjectHideFlags: 0
