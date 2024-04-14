@@ -1,5 +1,7 @@
 using System;
 using _PROTOTYPE.Scripts;
+using Audio;
+using Audio.SoundFX;
 using Enums;
 using Managers;
 using UnityEngine;
@@ -52,6 +54,7 @@ namespace Actors
         
             OnCollectedColor?.Invoke(actor.ActorColor);
             vanPrototype.AddToCage(actor);
+            SFX.COLLECT.PlaySound();
             //Destroy(actor.gameObject);
         }
 

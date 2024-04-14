@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utilities;
 
 namespace _PROTOTYPE.Scripts
 {
@@ -119,14 +120,17 @@ namespace _PROTOTYPE.Scripts
         private void OnGameLost()
         {
             loseWindowObject.gameObject.SetActive(true);
+            UIMousePointer.SetActive(true);
         }
 
         private void OnMainMenuButtonPressed()
         {
+            Time.timeScale = 1f;
             SceneManager.LoadScene(Globals.MENU_SCENE_INDEX);
         }
         private void OnRestartGameButtonPressed()
         {
+            Time.timeScale = 1f;
             SceneManager.LoadScene(Globals.GAME_SCENE_INDEX);
         }
 

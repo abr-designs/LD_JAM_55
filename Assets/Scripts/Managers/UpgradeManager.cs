@@ -4,6 +4,7 @@ using Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Managers
@@ -92,7 +93,7 @@ namespace Managers
         {
             windowObject.SetActive(true);
             Time.timeScale = 0f;
-            Cursor.visible = true;
+            UIMousePointer.SetActive(true);
         }
         
         private void EnableButtons(int count)
@@ -123,7 +124,7 @@ namespace Managers
 
         private void CloseWindow()
         {
-            Cursor.visible = false;
+            UIMousePointer.SetActive(false);
             windowObject.SetActive(false);
             Time.timeScale = 1f;
         }

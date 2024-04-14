@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using _PROTOTYPE.Scripts;
 using Actors;
+using Audio;
+using Audio.SoundFX;
 using Enums;
 using Orders;
 using Unity.Mathematics;
@@ -206,6 +208,7 @@ namespace Managers
 
         private void SpawnCurrencyCollectibles(int count)
         {
+            SFX.EXPLODE.PlaySound();
             for (int i = 0; i < count; i++)
             {
                 var dir = Quaternion.Euler(0f, 0f, Random.Range(-currencySpawnAngle, currencySpawnAngle)) * currencySpawnDirection.normalized;

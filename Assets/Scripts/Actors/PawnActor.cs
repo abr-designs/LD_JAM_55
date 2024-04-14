@@ -1,4 +1,6 @@
 using System;
+using Audio;
+using Audio.SoundFX;
 using Enums;
 using Managers;
 using UnityEngine;
@@ -199,6 +201,7 @@ namespace Actors
                     _rigidbody2D.velocity = Vector2.zero;
                     _rigidbody2D.angularVelocity = 0f;
                     _transformAnimator.Play();
+                    SFX.HIT.PlaySound();
                     break;
                 case STATE.IDLE:
                     _currentWaitTime = 0f;

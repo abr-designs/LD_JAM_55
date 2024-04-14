@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using Audio;
+using Audio.SoundFX;
 using Data;
 using Enums;
 using Managers;
@@ -68,6 +70,7 @@ namespace Actors
         
         private void OnMouseDown()
         {
+            SFX.MINE.PlaySound();
             //Don't want to click while we're resetting
             if (isBusy)
             {
@@ -97,6 +100,7 @@ namespace Actors
             _timesLeftToClick = clickCost;
             _spriteRenderer.color = notReadyColor;
             particleSystem.Stop();
+            SFX.EXPLODE.PlaySound();
 
             var waitTime = Random.Range(waitTimeRange.x, waitTimeRange.y) * GlobalMults.SpawnerRegenTimeMult;
 

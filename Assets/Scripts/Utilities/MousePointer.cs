@@ -3,8 +3,11 @@ using UnityEngine;
 
 namespace Utilities
 {
-    public class MousePointer : MonoBehaviour
+    public class MousePointer : HiddenSingleton<MousePointer>
     {
+        [SerializeField]
+        private bool isActive;
+        
         [SerializeField]
         private Color32 handColor;
         [SerializeField]
@@ -44,6 +47,9 @@ namespace Utilities
         // Update is called once per frame
         private void LateUpdate()
         {
+            if (isActive == false)
+                return;
+            
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
                 SetHandState(false);
@@ -71,13 +77,18 @@ namespace Utilities
 
             underHandSpriteRenderer.sprite = isOpen ? openHandUnder : closedHandUnder;
         }
+
+        public static void SetActive(bool state)
+        {
+            Instance.gameObject.SetActive(state);
+            Instance.isActive = state;
+        }
     
         //Callbacks
         //============================================================================================================//
 
         private void OnGameLost()
         {
-            Cursor.visible = true;
             enabled = false;
         }
 

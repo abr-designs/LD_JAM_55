@@ -48,7 +48,7 @@ namespace _PROTOTYPE.Scripts
         {
             pawnCollector.CanCollect = true;
             _uiManager = FindObjectOfType<UIManager>();
-            ActivateSpinners(false);
+            ActivateSpinners(false, false);
             _toDestroy = new List<GameObject>();
         }
 
@@ -92,7 +92,7 @@ namespace _PROTOTYPE.Scripts
             _isPlaying = true;
             pawnCollector.CanCollect = false;
             _transformAnimator.Loop();
-            ActivateSpinners(true);
+            ActivateSpinners(true, false);
             var animationTime = this.animationTime * GlobalMults.DeliveryResetTimeMult;
 
             StartCoroutine(CountdownCoroutine(animationTime));
@@ -113,6 +113,7 @@ namespace _PROTOTYPE.Scripts
             
             //TODO Determine if we need a pause time here
             CleanCage();
+            ActivateSpinners(true, true);
             
             for (float t = 0; t < halfTime; t+= Time.deltaTime)
             {
@@ -125,7 +126,7 @@ namespace _PROTOTYPE.Scripts
             
             transform.position = startLocation;
             
-            ActivateSpinners(false);
+            ActivateSpinners(false, false);
             _transformAnimator.Stop();
             pawnCollector.CanCollect = true;
             onAnimationComplete?.Invoke();
@@ -133,11 +134,12 @@ namespace _PROTOTYPE.Scripts
             _isPlaying = false;
         }
 
-        private void ActivateSpinners(bool state)
+        private void ActivateSpinners(bool state, bool reverse)
         {
             for (int i = 0; i < simpleSpinners.Length; i++)
             {
                 simpleSpinners[i].enabled = state;
+                simpleSpinners[i].reverse = reverse;
             }
         }
 

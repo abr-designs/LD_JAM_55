@@ -1,4 +1,6 @@
 using System;
+using Audio;
+using Audio.SoundFX;
 using Data;
 using Managers;
 using UnityEngine;
@@ -88,6 +90,7 @@ public class CurrencyCollectible : MonoBehaviour
             particleSystem.transform.SetParent(null, true);
             particleSystem.Stop();
             Destroy(gameObject);
+            SFX.COLLECT.PlaySound();
         }
     }
     

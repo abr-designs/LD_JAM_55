@@ -51,5 +51,4 @@ MonoBehaviour:
     type: 1
     audioClip: {fileID: 8300000, guid: 71327417229ae57459f5dd301f1f6567, type: 3}
     targetVolume: 1
-  musicSourcePrefab: {fileID: 2744353851148896356, guid: b4fd897668d6ac841ad6e796534532c8,
-    type: 3}
+  musicSourcePrefab: {fileID: 2744353851148896356, guid: b4fd897668d6ac841ad6e796534532c8, type: 3}
