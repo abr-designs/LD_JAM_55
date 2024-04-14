@@ -5,6 +5,7 @@ using Actors;
 using Enums;
 using Orders;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
@@ -15,6 +16,7 @@ namespace Managers
     public class GameManager : MonoBehaviour
     {
         public static event Action OnOrderCompleted;
+        public static event Action OnGameLost;
         public static event Action<float> OnCountdownUpdated;
         public static event Action<int> OnCurrencyChanged;
         //Index, Count
@@ -103,6 +105,7 @@ namespace Managers
             SetupOrder(orders[_orderIndex]);
         }
 
+        private float _updateTextTimer;
         // Update is called once per frame
         private void Update()
         {
@@ -114,16 +117,23 @@ namespace Managers
 
             if (_countingDownOrderTime)
             {
-                //TODO Make this only update every second
+                //FIXME Make this only update every second
                 if (_orderSecondsRemaining > 0f)
                 {
                     _orderSecondsRemaining -= Time.deltaTime;
-                    OnCountdownUpdated?.Invoke(_orderSecondsRemaining);
+
+                    _updateTextTimer += Time.deltaTime;
+
+                    if (_updateTextTimer > 1f)
+                    {
+                        _updateTextTimer = 0f;
+                        OnCountdownUpdated?.Invoke(_orderSecondsRemaining);
+                    }
+                    
                     return;
                 }
             
-                //TODO Include a losing condition here
-            
+                OnLostGame();
             }
         }
     
@@ -133,6 +143,36 @@ namespace Managers
             CurrencyCollectible.OnPickedUpCurrency -= OnPickedUpCurrency;
         }
 
+        //Game Flow
+        //============================================================================================================//
+
+        private void OnLevelComplete()
+        {
+            _countingDownOrderTime = false;
+            OnOrderCompleted?.Invoke();
+            
+            // - Add Points
+            SpawnCurrencyCollectibles(orders[_orderIndex].collectibleDrops);
+            // - Do Animation
+            // - Countdown to next order?
+            // - Setup Next Order
+            van.PlayAnimation(() =>
+            {
+                _orderIndex++;
+                SetupOrder(orders[_orderIndex]);
+            });
+        }
+
+        private void OnLostGame()
+        {
+            Debug.Log($"Lost on Order[{_orderIndex}]");
+            
+            _countingDownOrderTime = false;
+            Time.timeScale = 0.01f;
+            OnGameLost?.Invoke();
+        }
+
+        //Spawning Pawns
         //============================================================================================================//
 
         private void SpawnRandomActors(int count)
@@ -156,7 +196,6 @@ namespace Managers
         {
             var colorIndex = (int)color;
             colorCount[colorIndex]++;
-            //TODO Make something more interesting to look at, just plopping in the pen is not fun
 
             var temp = Instantiate(pawnActorPrefab, position, Quaternion.identity, actorContainerTransform);
             temp.Init(color, this);
@@ -255,26 +294,9 @@ namespace Managers
             {
                 _colorsToCollect[colorIndex]--;
             }
-        
-            //TODO Wrap up the order
-            if (CheckOrderComplete())
-            {
-                _countingDownOrderTime = false;
-                OnOrderCompleted?.Invoke();
             
-                // - Add Points
-                //TODO Make this more interesting by having them drop out of the van
-                SpawnCurrencyCollectibles(orders[_orderIndex].collectibleDrops);
-                // - Do Animation
-                // - Countdown to next order?
-                // - Setup Next Order
-                van.PlayAnimation(() =>
-                {
-                    _orderIndex++;
-                    SetupOrder(orders[_orderIndex]);
-                });
-
-            }
+            if (CheckOrderComplete())
+                OnLevelComplete();
         
             OnColorRemainingChanged?.Invoke(colorIndex, _colorsToCollect[colorIndex]);
         }
@@ -287,6 +309,8 @@ namespace Managers
 
         //Unity Editor
         //============================================================================================================//
+
+        #region Unity Editor
 
 #if UNITY_EDITOR
 
@@ -304,7 +328,7 @@ namespace Managers
             }
 
             this.orders = orders.ToArray();
-            UnityEditor.EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(this);
         }
     
         private void OnDrawGizmos()
@@ -338,6 +362,8 @@ namespace Managers
         }
     
 #endif
+
+        #endregion //Unity Editor
     
         //============================================================================================================//
     }

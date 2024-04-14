@@ -1,75 +1,86 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Managers;
 using UnityEngine;
 
-public class MousePointer : MonoBehaviour
+namespace Utilities
 {
-    [SerializeField]
-    private Color32 handColor;
-    [SerializeField]
-    private SpriteRenderer handSpriteRenderer;
-    [SerializeField]
-    private SpriteRenderer armSpriteRenderer;
-    [SerializeField]
-    private Sprite openHand, closedHand;
-
-    [SerializeField, Space(10f)]
-    private SpriteRenderer underHandSpriteRenderer;
-    [SerializeField]
-    private Sprite openHandUnder, closedHandUnder;
-
-    private GameManager _gameManager;
-
-    //Unity Functions
-    //============================================================================================================//
-
-    private void OnEnable()
+    public class MousePointer : MonoBehaviour
     {
-        Cursor.visible = false;
-    }
+        [SerializeField]
+        private Color32 handColor;
+        [SerializeField]
+        private SpriteRenderer handSpriteRenderer;
+        [SerializeField]
+        private SpriteRenderer armSpriteRenderer;
+        [SerializeField]
+        private Sprite openHand, closedHand;
 
-    // Start is called before the first frame update
-    private void Start()
-    {
-        _gameManager = FindObjectOfType<GameManager>();
-        handSpriteRenderer.color = handColor;
-        underHandSpriteRenderer.color = handColor;
-        armSpriteRenderer.color = handColor;
-        
-        SetHandState(true);
-    }
+        [SerializeField, Space(10f)]
+        private SpriteRenderer underHandSpriteRenderer;
+        [SerializeField]
+        private Sprite openHandUnder, closedHandUnder;
 
-    // Update is called once per frame
-    private void LateUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        private GameManager _gameManager;
+
+        //Unity Functions
+        //============================================================================================================//
+
+        private void OnEnable()
         {
-            SetHandState(false);
+            Cursor.visible = false;
+            GameManager.OnGameLost += OnGameLost;
         }
-        
-        else if (Input.GetKeyUp(KeyCode.Mouse0))
+
+        // Start is called before the first frame update
+        private void Start()
         {
+            _gameManager = FindObjectOfType<GameManager>();
+            handSpriteRenderer.color = handColor;
+            underHandSpriteRenderer.color = handColor;
+            armSpriteRenderer.color = handColor;
+        
             SetHandState(true);
         }
 
-        transform.position = _gameManager.MouseWorldPosition;
-    }
-    
-    private void OnDisable()
-    {
-        Cursor.visible = true;
-    }
-    
-    //============================================================================================================//
+        // Update is called once per frame
+        private void LateUpdate()
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                SetHandState(false);
+            }
+        
+            else if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                SetHandState(true);
+            }
 
-    private void SetHandState(bool isOpen)
-    {
-        handSpriteRenderer.sprite = isOpen ? openHand : closedHand;
-
-        underHandSpriteRenderer.sprite = isOpen ? openHandUnder : closedHandUnder;
-    }
+            transform.position = _gameManager.MouseWorldPosition;
+        }
     
-    //============================================================================================================//
+        private void OnDisable()
+        {
+            Cursor.visible = true;
+            GameManager.OnGameLost -= OnGameLost;
+        }
+    
+        //============================================================================================================//
+
+        private void SetHandState(bool isOpen)
+        {
+            handSpriteRenderer.sprite = isOpen ? openHand : closedHand;
+
+            underHandSpriteRenderer.sprite = isOpen ? openHandUnder : closedHandUnder;
+        }
+    
+        //Callbacks
+        //============================================================================================================//
+
+        private void OnGameLost()
+        {
+            Cursor.visible = true;
+            enabled = false;
+        }
+
+        //============================================================================================================//
+    }
 }

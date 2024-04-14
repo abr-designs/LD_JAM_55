@@ -1,5 +1,6 @@
 using System;
 using Enums;
+using Managers;
 using UnityEngine;
 
 namespace Actors
@@ -12,6 +13,15 @@ namespace Actors
 
         [SerializeField]
         private TransformAnimator transformAnimator;
+
+        //Unity Functions
+        //============================================================================================================//
+
+        private void OnEnable()
+        {
+            GameManager.OnGameLost += OnGameLost;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -34,5 +44,20 @@ namespace Actors
             transformAnimator?.Play();
             Destroy(actor.gameObject);
         }
+
+        private void OnDisable()
+        {
+            GameManager.OnGameLost -= OnGameLost;
+        }
+
+        //Callbacks
+        //============================================================================================================//
+
+        private void OnGameLost()
+        {
+            canCollect = false;
+        }
+        
+        //============================================================================================================//
     }
 }

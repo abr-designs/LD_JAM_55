@@ -36,7 +36,12 @@ public class CurrencyCollectible : MonoBehaviour
 
     //Unity Functions
     //============================================================================================================//
-    
+
+    private void OnEnable()
+    {
+        GameManager.OnGameLost += OnGameLost;
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -86,6 +91,11 @@ public class CurrencyCollectible : MonoBehaviour
         }
     }
     
+    private void OnDisable()
+    {
+        GameManager.OnGameLost -= OnGameLost;
+    }
+    
     //============================================================================================================//
 
     public void Launch(Vector2 impulse)
@@ -97,6 +107,16 @@ public class CurrencyCollectible : MonoBehaviour
         _rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         
         _rigidbody2D.AddForce(impulse, ForceMode2D.Impulse);
+    }
+
+    //Callbacks
+    //============================================================================================================//
+    
+    private void OnGameLost()
+    {
+        particleSystem.transform.SetParent(null, true);
+        particleSystem.Stop();
+        Destroy(gameObject);
     }
 
     //============================================================================================================//

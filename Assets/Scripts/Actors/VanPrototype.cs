@@ -25,6 +25,8 @@ namespace _PROTOTYPE.Scripts
         [SerializeField]
         private TransformAnimator _transformAnimator;
 
+        private UIManager _uiManager;
+
         private bool _isPlaying;
 
         //Unity Functions
@@ -33,6 +35,7 @@ namespace _PROTOTYPE.Scripts
         private void Start()
         {
             pawnCollector.canCollect = true;
+            _uiManager = FindObjectOfType<UIManager>();
         }
 
         //============================================================================================================//
@@ -43,6 +46,7 @@ namespace _PROTOTYPE.Scripts
                 return;
             
             StartCoroutine(AnimateCoroutine(onAnimationComplete));
+            
         }
 
         private IEnumerator AnimateCoroutine(Action onAnimationComplete)
@@ -51,6 +55,8 @@ namespace _PROTOTYPE.Scripts
             pawnCollector.canCollect = false;
             _transformAnimator.Loop();
             var animationTime = this.animationTime * GlobalMults.DeliveryResetTimeMult;
+
+            StartCoroutine(CountdownCoroutine(animationTime));
             var halfTime = animationTime / 2f;
 
             transform.position = startLocation;
@@ -84,6 +90,18 @@ namespace _PROTOTYPE.Scripts
             onAnimationComplete?.Invoke();
 
             _isPlaying = false;
+        }
+
+        private IEnumerator CountdownCoroutine(float time)
+        {
+            const string PREFIX = "Next Order In\n";
+            
+            for (float t = 0; t < time; t+= Time.deltaTime)
+            {
+                _uiManager.UpdateCountdownText(time - t, PREFIX);
+                
+                yield return null;
+            }
         }
 
         //Editor Functions

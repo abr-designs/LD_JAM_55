@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Enums;
 using Managers;
 using UnityEngine;
@@ -45,6 +46,11 @@ namespace Actors
         //Unity Functions
         //============================================================================================================//
 
+        private void OnEnable()
+        {
+            GameManager.OnGameLost += OnGameLost;
+        }
+        
         private void Start()
         {
             if (_gameManager == null)
@@ -79,6 +85,11 @@ namespace Actors
             {
                 StartCoroutine(ProcessingCoroutine(processingTime));
             }
+        }
+        
+        private void OnDisable()
+        {
+            GameManager.OnGameLost -= OnGameLost;
         }
 
         //============================================================================================================//
@@ -150,6 +161,14 @@ namespace Actors
             {
                 portalRenderers[i].color = color;
             }
+        }
+
+        //Callbacks
+        //============================================================================================================//
+        
+        private void OnGameLost()
+        {
+            enabled = false;
         }
 
         //============================================================================================================//

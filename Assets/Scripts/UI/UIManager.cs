@@ -1,7 +1,10 @@
 ﻿using System;
+using Data;
 using Managers;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace _PROTOTYPE.Scripts
 {
@@ -23,53 +26,68 @@ namespace _PROTOTYPE.Scripts
         }
         private GameManager _gameManager;
         
-        [SerializeField, Header("UI")]
+        [SerializeField, Header("Game UI")]
         private SpriteRenderer[] _spriteRenderers = new SpriteRenderer[COLOR_COUNT];
         [SerializeField]
         private TextMeshPro[] _textMeshPros = new TextMeshPro[COLOR_COUNT];
         [SerializeField]
         private TransformAnimator[] _transformAnimators = new TransformAnimator[COLOR_COUNT];
-        [SerializeField]
-        private TextMeshPro countDownText;
         
-        
-        [SerializeField, Header("Currency")]
+        [SerializeField, Header("Currency UI")]
         private TextMeshPro currencyText;
         [SerializeField]
         private TransformAnimator currencyTransformAnimator;
+
+        [SerializeField, Header("Lost Game Window")]
+        private GameObject loseWindowObject;
+        [SerializeField]
+        private Button restartGameButton;
+        [SerializeField]
+        private Button mainMenuButton;
+        
+        [SerializeField, Header("Countdown Text")]
+        private TMP_Text countDownText;
+        [SerializeField]
+        private TransformAnimator countdownTransformAnimator;
 
         //Unit Functions
         //============================================================================================================//
         private void OnEnable()
         {
-            GameManager.OnCountdownUpdated += UpdateCountdownText;
+            GameManager.OnCountdownUpdated += UpdateOrderCountdownText;
             GameManager.OnCurrencyChanged += OnCurrencyChanged;
             GameManager.OnColorRemainingChanged += UpdateColorsToCollectUI;
             GameManager.OnColorRemainingSet += SetupOrderUI;
             GameManager.OnOrderCompleted += ResetOrderUI;
+            GameManager.OnGameLost += OnGameLost;
             
             CurrencyCollectible.OnPickedUpCurrency += OnPickedUpCurrency;
         }
 
-
-
         private void Awake()
         {
-            SetupUI();
+            SetupGameUI();
+            SetupButtons();
+            SetupWindows();
         }
 
         private void OnDisable()
         {
-            GameManager.OnCountdownUpdated -= UpdateCountdownText;
+            GameManager.OnCountdownUpdated -= UpdateOrderCountdownText;
             GameManager.OnCurrencyChanged -= OnCurrencyChanged;
             GameManager.OnColorRemainingChanged -= UpdateColorsToCollectUI;
             GameManager.OnColorRemainingSet -= SetupOrderUI;
             GameManager.OnOrderCompleted -= ResetOrderUI;
+            
+            GameManager.OnGameLost -= OnGameLost;
+            
+            CurrencyCollectible.OnPickedUpCurrency -= OnPickedUpCurrency;
         }
 
+        //Setup UI
         //============================================================================================================//
 
-        private void SetupUI()
+        private void SetupGameUI()
         {
             countDownText.text = string.Empty;
             currencyText.text = "0";
@@ -81,6 +99,36 @@ namespace _PROTOTYPE.Scripts
             }
         }
 
+        private void SetupButtons()
+        {
+            restartGameButton.onClick.AddListener(OnRestartGameButtonPressed);
+            mainMenuButton.onClick.AddListener(OnMainMenuButtonPressed);
+        }
+
+        private void SetupWindows()
+        {
+            //FIXME I think that the Upgrade window should live here
+            loseWindowObject.gameObject.SetActive(false);
+        }
+
+        //Lost Game Window
+        //============================================================================================================//
+        
+        private void OnGameLost()
+        {
+            loseWindowObject.gameObject.SetActive(true);
+        }
+
+        private void OnMainMenuButtonPressed()
+        {
+            SceneManager.LoadScene(Globals.MENU_SCENE_INDEX);
+        }
+        private void OnRestartGameButtonPressed()
+        {
+            SceneManager.LoadScene(Globals.GAME_SCENE_INDEX);
+        }
+
+        //Game UI Callbacks
         //============================================================================================================//
         
         private void ResetOrderUI()
@@ -121,13 +169,24 @@ namespace _PROTOTYPE.Scripts
             _textMeshPros[index].text = count.ToString();
         }
 
-        private void UpdateCountdownText(float secondsRemaining)
+        private void UpdateOrderCountdownText(float secondsRemaining)
+        {
+            const string PREFIX = "Time to Deliver\n";
+            
+            UpdateCountdownText(secondsRemaining, PREFIX);
+            
+            if(secondsRemaining < 10)
+                countdownTransformAnimator.Play();
+        }
+        
+        public void UpdateCountdownText(float secondsRemaining, string prefix)
         {
             //TODO Make this only update every second
             var timeSpan = TimeSpan.FromSeconds(secondsRemaining);
             var mins = timeSpan.Minutes;
             var sec = timeSpan.Seconds;
-            countDownText.text = $" {(mins > 0 ? $"{mins}m " : "")}{sec}s";
+            countDownText.text = $"{prefix} {(mins > 0 ? $"{mins}m " : "")}{sec}s";
+            
         }
         
         private void OnCurrencyChanged(int currencyCount)
@@ -140,6 +199,9 @@ namespace _PROTOTYPE.Scripts
             currencyTransformAnimator.Play();
         }
         
+        
+        //============================================================================================================//
+
         //============================================================================================================//
     }
 }
